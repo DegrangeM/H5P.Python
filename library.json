@@ -31,6 +31,23 @@
       "machineName": "H5P.JoubelUI",
       "majorVersion": 1,
       "minorVersion": 3
+    },
+    {
+      "machineName": "Skulpt",
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
+    {
+      "machineName": "CodeMirror",
+      "majorVersion": 1,
+      "minorVersion": 0
+    }
+  ],
+  "editorDependencies": [
+    {
+      "machineName": "H5PEditor.CodeEditor",
+      "majorVersion": 1,
+      "minorVersion": 0
     }
   ]
 }
