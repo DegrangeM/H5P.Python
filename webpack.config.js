@@ -17,10 +17,10 @@ const config = {
   plugins: [
     new MiniCssExtractPlugin({
       filename: 'h5p-python.css'
-    }),
+    })/*,
     new MinifyPlugin({}, {
       sourceMap: isDev
-    })
+    })*/
   ],
   entry: {
     dist: './src/entries/h5p-python.js'
