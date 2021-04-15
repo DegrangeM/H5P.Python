@@ -2,7 +2,8 @@
   "globals": {
     "H5P": true,
     "H5PIntegration": true,
-    "H5PEditor": true
+    "H5PEditor": true,
+    "CodeMirror": true
   },
   "env": {
     "browser": true
