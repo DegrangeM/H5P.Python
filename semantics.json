@@ -69,6 +69,13 @@
     "importance": "low",
     "fields": [
       {
+        "name": "run",
+        "type": "text",
+        "label": "Text for \"Run\" button",
+        "importance": "low",
+        "default": "Run"
+      },
+      {
         "name": "checkAnswer",
         "type": "text",
         "label": "Text for \"Check\" button",

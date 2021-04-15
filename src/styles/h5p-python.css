@@ -1,3 +1,6 @@
 .h5p-hello-world {
   color: blue;
 }
+.h5p-question-run:before{
+  content: '\F04b'
+}

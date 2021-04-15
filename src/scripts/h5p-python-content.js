@@ -7,13 +7,16 @@ export default class PythonContent {
    * @param {string} [username=world] Username.
    * @param {number} [random=-1] Random number.
    */
-  constructor(params, callbacks, username = 'world', random = -1) {
-    this.params = params;
-    this.callbacks = callbacks;
+  constructor(python, random = -1) {
+    this.python = python;
+    this.params = python.params;
+   // this.callbacks = callbacks;
   
     this.content = document.createElement('div');
     // this.content.innerHTML = `<p>${textField.replace('%username', username)} (${random})</p>`;
-    this.createEditor(this.content, params);
+    this.createEditor(this.content, this.params);
+
+    this.python.addButton('run', this.params.l10n.run, function(){alert(42);});
   }
 
   /**
@@ -54,7 +57,7 @@ export default class PythonContent {
     });
 
     this.editor.on('changes', function () {
-      that.callbacks.resize();
+      this.python.trigger('resize');
     });
   
     /*
@@ -73,7 +76,7 @@ export default class PythonContent {
   
     CodeMirror.H5P.setLanguage(this.editor, 'python');
   
-    this.callbacks.resize();
+    this.python.trigger('resize');
   }
 
   /**
