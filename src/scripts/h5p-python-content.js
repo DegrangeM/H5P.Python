@@ -10,13 +10,18 @@ export default class PythonContent {
   constructor(python, random = -1) {
     this.python = python;
     this.params = python.params;
-   // this.callbacks = callbacks;
-  
+    // this.callbacks = callbacks;
+
     this.content = document.createElement('div');
     // this.content.innerHTML = `<p>${textField.replace('%username', username)} (${random})</p>`;
     this.createEditor(this.content, this.params);
 
-    this.python.addButton('run', this.params.l10n.run, function(){alert(42);});
+    this.python.addButton('run', this.params.l10n.run, () => {
+      Sk.H5P.run(this.editor.getValue(), x => {
+        H5P.jQuery(this.content).append(x);
+      } );
+    });
+    // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
   }
 
   /**
@@ -59,7 +64,7 @@ export default class PythonContent {
     this.editor.on('changes', function () {
       this.python.trigger('resize');
     });
-  
+
     /*
     TODO
     if (this.options.maxHeight !== 0) {
@@ -70,12 +75,12 @@ export default class PythonContent {
       CodeMirror.H5P.highlightLines(this.editor, this.options.highlightLines);
     }
     */
-  
-  
+
+
     this.editor.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
-  
+
     CodeMirror.H5P.setLanguage(this.editor, 'python');
-  
+
     this.python.trigger('resize');
   }
 

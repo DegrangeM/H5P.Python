@@ -3,7 +3,8 @@
     "H5P": true,
     "H5PIntegration": true,
     "H5PEditor": true,
-    "CodeMirror": true
+    "CodeMirror": true,
+    "Sk": true
   },
   "env": {
     "browser": true
