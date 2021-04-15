@@ -54,7 +54,10 @@ export default class Python extends H5P.Question {
      */
     this.registerDomElements = () => {
       const content = new PythonContent(
-        params, // Parameters from editor
+        params, // Parameters from editor,
+        {
+          resize: () => this.trigger('resize')
+        },
         (H5PIntegration && H5PIntegration.user) ? H5PIntegration.user.name : 'Unknown', // Try to retrieve user name from host system,
         this.previousState.random // previous session state
       );
