@@ -1,0 +1,36 @@
+{
+  "title": "Python",
+  "description": "TODO",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 0,
+  "runnable": 1,
+  "author": "Degrange Mathieu",
+  "license": "MIT",
+  "machineName": "H5P.Python",
+  "embedTypes": [
+    "iframe"
+  ],
+  "preloadedJs": [
+    {
+      "path": "dist/h5p-python.js"
+    }
+  ],
+  "preloadedCss": [
+    {
+      "path": "dist/h5p-python.css"
+    }
+  ],
+  "preloadedDependencies": [
+    {
+      "machineName": "H5P.Question",
+      "majorVersion": 1,
+      "minorVersion": 4
+    },
+    {
+      "machineName": "H5P.JoubelUI",
+      "majorVersion": 1,
+      "minorVersion": 3
+    }
+  ]
+}
