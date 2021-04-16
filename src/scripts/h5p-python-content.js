@@ -10,6 +10,7 @@ export default class PythonContent {
   constructor(python, random = -1) {
     this.python = python;
     this.params = python.params;
+    // this.callbacks = callbacks;
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
@@ -17,7 +18,7 @@ export default class PythonContent {
 
     this.instructions = document.createElement('div');
     this.instructions.classList.add('h5p-python-instructions');
-    this.createInstructions(this.instructions);
+    this.createInstructions();
     this.content.appendChild(this.instructions);
 
     let instructionHandle = document.createElement('div');
@@ -84,14 +85,10 @@ export default class PythonContent {
     // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
   }
 
-  /**
-   * Append instructions
-   * @param {HTMLElement} el  Html node to which the instructions will be appended.
-   */
-  createInstructions(el) {
-    let instructionNodeChild = document.createElement('div');
+
+  createInstructions() {
     CodeMirror.requireMode('python', () => {
-      instructionNodeChild.innerHTML = this.params.instructions.replace(
+      this.instructions.innerHTML = this.params.instructions.replace(
         /`(?:([^`<]+)|``([^`]+)``)`/g, // `XXX` or ```YYY``` ; XXX can't have html tag (so no new line)
         (m, inlineCode, blockCode) => {
           let code;
@@ -122,12 +119,11 @@ export default class PythonContent {
         return CodeMirror.H5P.getLibraryPath() + '/mode/' + mode + '/' + mode + '.js';
       }
     });
-    el.appendChild(instructionNodeChild);
   }
 
   /**
    * Append the codemirror that will act as editor
-   * @param {HTMLElement} el  Html node to which the editor will be appended.
+   * @param {HTMLElement} el  Html node to which the editor will be append.
    */
   createEditor(el) {
 
@@ -178,7 +174,7 @@ export default class PythonContent {
 
   /**
    * Append the codemirror that will act as ouput
-   * @param {HTMLElement} el  Html node to which the editor will be appended.
+   * @param {HTMLElement} el  Html node to which the editor will be append.
    */
   createOutput(el) {
 

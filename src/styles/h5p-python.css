@@ -16,14 +16,11 @@
 }
 
 .h5p-python-instructions {
-  margin-bottom: 10px;
-}
-
-.h5p-python-instructions>div {
-  height: 100%;
   border: 1px solid #ddd;
   border-right: none;
   padding: 5px;
+  padding-bottom: 7px;
+  margin-bottom: -2px;
 }
 
 .h5p-python-instructions pre.h5p-python-instructions-inlineCode {
@@ -36,10 +33,6 @@
 
 .h5p-python-editor {
   flex: 4;
-}
-
-.h5p-python-instructions, .h5p-python-editor, .h5p-python-output {
-  overflow: auto;
 }
 
 .h5p-python-instructions.hidden, .h5p-python-output.hidden {
