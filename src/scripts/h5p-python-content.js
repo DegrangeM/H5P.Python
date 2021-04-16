@@ -16,6 +16,8 @@ export default class PythonContent {
 
     let nodeInstructions = document.createElement('div');
 
+    nodeInstructions.classList.add('h5p-python-instructions');
+
     nodeInstructions.innerHTML = this.params.instructions;
 
     this.content.appendChild(nodeInstructions);
@@ -38,8 +40,17 @@ export default class PythonContent {
       this.output.setValue('');
       Sk.H5P.run(this.editor.getValue(), x => {
         this.output.setValue(this.output.getValue() + x);
-      } );
+      });
     });
+
+    //TODO
+
+    this.content.style.display = 'flex';
+    nodeEditor.style.flex = 1;
+    nodeOuput.style.flex = 1;
+
+    window.editor = this.editor;
+    window.output = this.output;
     // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
   }
 
@@ -80,9 +91,9 @@ export default class PythonContent {
     });
 
     this.editor.on('changes', () => {
-      this.python.trigger('resize');
+      this.resizeEditorAndOuput();
     });
-
+    
     /*
     TODO
     if (this.options.maxHeight !== 0) {
@@ -126,11 +137,20 @@ export default class PythonContent {
     });
 
     this.output.on('changes', () => {
-      this.python.trigger('resize');
+      this.resizeEditorAndOuput();
     });
 
     this.output.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
 
+  }
+
+  resizeEditorAndOuput() {
+    this.editor.setSize(null, 'auto');
+    this.output.setSize(null, 'auto');
+    let height = Math.max(this.editor.getScrollInfo().height, this.output.getScrollInfo().height);
+    this.editor.setSize(null, height);
+    this.output.setSize(null, height);
+    this.python.trigger('resize');
   }
 
   /**

@@ -4,3 +4,8 @@
 .h5p-question-run:before{
   content: '\F04b'
 }
+
+.h5p-python-instructions {
+  border: 1px solid #ddd;
+  padding: 5px;
+}
