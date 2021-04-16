@@ -14,10 +14,11 @@ export default class PythonContent {
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
+    this.content.style.maxHeight = this.params.maxHeight;
 
     this.instructions = document.createElement('div');
     this.instructions.classList.add('h5p-python-instructions');
-    // todo
+    this.createInstructions();
     this.content.appendChild(this.instructions);
 
     let instructionHandle = document.createElement('div');
@@ -60,6 +61,32 @@ export default class PythonContent {
       }
     });
 
+
+
+
+
+    this.python.trigger('resize');
+
+    this.python.addButton('run', this.params.l10n.run, () => {
+      this.output.setValue('');
+      Sk.H5P.run(this.editor.getValue(), x => {
+        this.output.setValue(this.output.getValue() + x);
+      });
+    });
+
+    this.python.addButton('stop', this.params.l10n.run, () => {
+
+    });
+
+    //TODO
+
+    window.editor = this.editor;
+    window.output = this.output;
+    // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
+  }
+
+
+  createInstructions() {
     CodeMirror.requireMode('python', () => {
       this.instructions.innerHTML = this.params.instructions.replace(
         /`(?:([^`<]+)|``([^`]+)``)`/g, // `XXX` or ```YYY``` ; XXX can't have html tag (so no new line)
@@ -92,27 +119,6 @@ export default class PythonContent {
         return CodeMirror.H5P.getLibraryPath() + '/mode/' + mode + '/' + mode + '.js';
       }
     });
-
-
-
-    this.python.trigger('resize');
-
-    this.python.addButton('run', this.params.l10n.run, () => {
-      this.output.setValue('');
-      Sk.H5P.run(this.editor.getValue(), x => {
-        this.output.setValue(this.output.getValue() + x);
-      });
-    });
-
-    this.python.addButton('stop', this.params.l10n.run, () => {
-
-    });
-
-    //TODO
-
-    window.editor = this.editor;
-    window.output = this.output;
-    // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
   }
 
   /**
@@ -124,17 +130,14 @@ export default class PythonContent {
     this.editor = CodeMirror(el, {
       value: CodeMirror.H5P.decode(this.params.startingCode || ''),
       keyMap: 'sublime',
-      //tabSize: this.params.tabSize,
-      tabSize: 2,
+      tabSize: this.params.editorOptions.tabSize,
       indentWithTabs: true,
       lineNumbers: true,
       matchBrackets: true,
-      // matchTags: this.params.matchTags ? {
-      matchTags: true ? {
+      matchTags: this.params.editorOptions.matchTags ? {
         bothTags: true
       } : false,
-      // foldGutter: this.params.foldGutter,
-      foldGutter: true,
+      foldGutter: this.params.editorOptions.foldGutter,
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       styleActiveLine: {
         nonEmpty: true
