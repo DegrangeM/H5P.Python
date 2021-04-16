@@ -13,12 +13,31 @@ export default class PythonContent {
     // this.callbacks = callbacks;
 
     this.content = document.createElement('div');
-    // this.content.innerHTML = `<p>${textField.replace('%username', username)} (${random})</p>`;
-    this.createEditor(this.content, this.params);
+
+    let nodeInstructions = document.createElement('div');
+
+    nodeInstructions.innerHTML = this.params.instructions;
+
+    this.content.appendChild(nodeInstructions);
+
+    let nodeEditor = document.createElement('div');
+
+    this.content.appendChild(nodeEditor);
+
+    this.createEditor(nodeEditor);
+
+    let nodeOuput = document.createElement('div');
+
+    this.content.appendChild(nodeOuput);
+
+    this.createOutput(nodeOuput);
+
+    this.python.trigger('resize');
 
     this.python.addButton('run', this.params.l10n.run, () => {
+      this.output.setValue('');
       Sk.H5P.run(this.editor.getValue(), x => {
-        H5P.jQuery(this.content).append(x);
+        this.output.setValue(this.output.getValue() + x);
       } );
     });
     // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
@@ -29,7 +48,6 @@ export default class PythonContent {
    * @param {object} params Parameters from editor.
    */
   createEditor(el) {
-    const that = this;
 
     this.editor = CodeMirror(el, {
       value: CodeMirror.H5P.decode(this.params.startingCode || ''),
@@ -61,7 +79,7 @@ export default class PythonContent {
       }
     });
 
-    this.editor.on('changes', function () {
+    this.editor.on('changes', () => {
       this.python.trigger('resize');
     });
 
@@ -81,7 +99,38 @@ export default class PythonContent {
 
     CodeMirror.H5P.setLanguage(this.editor, 'python');
 
-    this.python.trigger('resize');
+  }
+
+  createOutput(el) {
+
+    CodeMirror.H5P.loadTheme('nord');
+
+    this.output = CodeMirror(el, {
+      value: '',
+      theme: 'nord',
+      tabSize: 2,
+      indentWithTabs: true,
+      styleActiveLine: {
+        nonEmpty: true
+      },
+      extraKeys: {
+        'F11': function (cm) {
+          cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+        },
+        'Esc': function (cm) {
+          if (cm.getOption('fullScreen')) {
+            cm.setOption('fullScreen', false);
+          }
+        }
+      }
+    });
+
+    this.output.on('changes', () => {
+      this.python.trigger('resize');
+    });
+
+    this.output.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
+
   }
 
   /**
