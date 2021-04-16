@@ -1,11 +1,17 @@
-.h5p-hello-world {
-  color: blue;
+.h5p-python-content {
+  display: flex;
+  flex-wrap: wrap;
 }
-.h5p-question-run:before{
+
+.h5p-question-run:before {
   content: '\F04b'
 }
 
 .h5p-python-instructions {
   border: 1px solid #ddd;
   padding: 5px;
+}
+
+.h5p-python-instructions, .h5p-python-editor, .h5p-python-output {
+  flex: 1;
 }
