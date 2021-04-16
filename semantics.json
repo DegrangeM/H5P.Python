@@ -42,7 +42,7 @@
     "label": "Max height",
     "description": "Max height (in pixels) of the editor. Set it to 0 if you don't want to put a max height.",
     "default": 600,
-    "min": 0,
+    "min": 100,
     "step": 1
   },
   {

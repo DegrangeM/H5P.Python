@@ -18,6 +18,7 @@ export default class PythonContent {
 
     this.instructions = document.createElement('div');
     this.instructions.classList.add('h5p-python-instructions');
+    this.instructions.style.maxHeight = this.params.maxHeight - 12; // 1 + 5 + 5 + 1 (border + padding + padding + border)
     this.createInstructions();
     this.content.appendChild(this.instructions);
 

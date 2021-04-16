@@ -21,6 +21,7 @@
   padding: 5px;
   padding-bottom: 7px;
   margin-bottom: -2px;
+  overflow: auto;
 }
 
 .h5p-python-instructions pre.h5p-python-instructions-inlineCode {
@@ -29,10 +30,12 @@
 
 .h5p-python-instructions, .h5p-python-output {
   flex: 3;
+  max-height: inherit;
 }
 
 .h5p-python-editor {
   flex: 4;
+  max-height: inherit;
 }
 
 .h5p-python-instructions.hidden, .h5p-python-output.hidden {
@@ -41,6 +44,7 @@
 
 .h5p-python-content .CodeMirror {
   height: 100%;
+  max-height: inherit;
   border-left: none;
   border-right: none;
 }
