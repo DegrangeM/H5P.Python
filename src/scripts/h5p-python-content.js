@@ -17,18 +17,67 @@ export default class PythonContent {
 
     this.instructions = document.createElement('div');
     this.instructions.classList.add('h5p-python-instructions');
-    this.instructions.innerHTML = this.params.instructions;
+    // todo
     this.content.appendChild(this.instructions);
+
+    let instructionHandle = document.createElement('div');
+    instructionHandle.classList.add('h5p-python-instructions-handle');
+    this.content.appendChild(instructionHandle);
 
     let nodeEditor = document.createElement('div');
     nodeEditor.classList.add('h5p-python-editor');
     this.content.appendChild(nodeEditor);
     this.createEditor(nodeEditor);
-    
+
+    let outputHandle = document.createElement('div');
+    outputHandle.classList.add('h5p-python-output-handle');
+    this.content.appendChild(outputHandle);
+
     let nodeOuput = document.createElement('div');
     this.content.appendChild(nodeOuput);
     nodeOuput.classList.add('h5p-python-output');
     this.createOutput(nodeOuput);
+
+    instructionHandle.addEventListener('click', () => {
+      if (!this.instructions.classList.contains('hidden')) {
+        this.instructions.classList.add('hidden');
+        instructionHandle.classList.add('hidden');
+      }
+      else {
+        this.instructions.classList.remove('hidden');
+        instructionHandle.classList.remove('hidden');
+      }
+    });
+
+    outputHandle.addEventListener('click', () => {
+      if (!nodeOuput.classList.contains('hidden')) {
+        nodeOuput.classList.add('hidden');
+        outputHandle.classList.add('hidden');
+      }
+      else {
+        nodeOuput.classList.remove('hidden');
+        outputHandle.classList.remove('hidden');
+      }
+    });
+
+    CodeMirror.requireMode('python', () => {
+      this.instructions.innerHTML = this.params.instructions.replace(/`(?:([^`<]+)|``([^`]+)``)`/g, (m, inlineCode, blockCode) => {
+        let code = CodeMirror.H5P.decode(inlineCode || blockCode);
+        let codeNode = document.createElement('pre');
+        codeNode.classList.add('cm-s-default');
+        if(inlineCode) {
+          codeNode.classList.add('h5p-python-instructions-inlineCode');
+        }
+        CodeMirror.runMode(code, 'python', codeNode);
+        return codeNode.outerHTML;
+      });
+    }, {
+      path: function (mode) {
+        return CodeMirror.H5P.getLibraryPath() + '/mode/' + mode + '/' + mode + '.js';
+      }
+    });
+
+
 
     this.python.trigger('resize');
 
@@ -39,19 +88,20 @@ export default class PythonContent {
       });
     });
 
-    setTimeout(() => {
-      this.resizeEditorAndOuput();
-    }, 10);
+    this.python.addButton('stop', this.params.l10n.run, () => {
+
+    });
 
     //TODO
+
     window.editor = this.editor;
     window.output = this.output;
     // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
   }
 
   /**
+   * Append the codemirror that will act as editor
    * @param {HTMLElement} el  Html node to which the editor will be append.
-   * @param {object} params Parameters from editor.
    */
   createEditor(el) {
 
@@ -85,10 +135,6 @@ export default class PythonContent {
       }
     });
 
-    this.editor.on('changes', () => {
-      this.resizeEditorAndOuput();
-    });
-
     /*
     TODO
     if (this.options.maxHeight !== 0) {
@@ -107,6 +153,10 @@ export default class PythonContent {
 
   }
 
+  /**
+   * Append the codemirror that will act as ouput
+   * @param {HTMLElement} el  Html node to which the editor will be append.
+   */
   createOutput(el) {
 
     CodeMirror.H5P.loadTheme('nord');
@@ -114,6 +164,7 @@ export default class PythonContent {
     this.output = CodeMirror(el, {
       value: '',
       theme: 'nord',
+      readOnly: true,
       tabSize: 2,
       indentWithTabs: true,
       styleActiveLine: {
@@ -131,23 +182,11 @@ export default class PythonContent {
       }
     });
 
-    this.output.on('changes', () => {
-      this.resizeEditorAndOuput();
-    });
-
     this.output.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
 
   }
 
-  resizeEditorAndOuput() {
-    return;
-    this.editor.setSize(null, 'auto');
-    this.output.setSize(null, 'auto');
-    let height = Math.max(this.editor.getScrollInfo().height, this.output.getScrollInfo().height, this.instructions.clientHeight);
-    this.editor.setSize(null, height);
-    this.output.setSize(null, height);
-    this.python.trigger('resize');
-  }
+
 
   /**
    * Return the DOM for this class.

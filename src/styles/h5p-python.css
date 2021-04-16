@@ -4,14 +4,85 @@
 }
 
 .h5p-question-run:before {
-  content: '\F04b'
+  content: '\f04b'
+}
+
+.h5p-question-stop:before {
+  content: '\f04d'
+}
+
+.h5p-python .h5p-question-buttons {
+  text-align: center;
 }
 
 .h5p-python-instructions {
   border: 1px solid #ddd;
+  border-right: none;
   padding: 5px;
+  padding-bottom: 7px;
+  margin-bottom: -2px;
 }
 
-.h5p-python-instructions, .h5p-python-editor, .h5p-python-output {
-  flex: 1;
+.h5p-python-instructions pre.h5p-python-instructions-inlineCode {
+  display: inline;
+}
+
+.h5p-python-instructions, .h5p-python-output {
+  flex: 3;
+}
+
+.h5p-python-editor {
+  flex: 4;
+}
+
+.h5p-python-instructions.hidden, .h5p-python-output.hidden {
+  display: none;
+}
+
+.h5p-python-content .CodeMirror {
+  height: 100%;
+  border-left: none;
+  border-right: none;
+}
+
+.h5p-python-instructions-handle, .h5p-python-output-handle {
+  background: #ddd;
+  display: flex;
+  color: white;
+  margin-bottom: -2px;
+  padding-bottom: 2px;
+  cursor: pointer;
+  font-size: small;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.h5p-python-instructions-handle:hover, .h5p-python-output-handle:hover {
+  background: #1a73d9;
+}
+
+.h5p-python-instructions-handle::before {
+  content: '\f053';
+  font-family: 'H5PFontAwesome4';
+  align-self: center;
+}
+
+.h5p-python-instructions-handle.hidden::before {
+  content: '\f054';
+}
+
+.h5p-python-output-handle::before {
+  content: '\f054';
+  font-family: 'H5PFontAwesome4';
+  align-self: center;
+}
+
+.h5p-python-output-handle.hidden::before {
+  content: '\f053';
+}
+
+.h5p-python-output .CodeMirror {
+  border-left: none;
 }
