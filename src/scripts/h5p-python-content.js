@@ -70,8 +70,14 @@ export default class PythonContent {
 
     this.python.addButton('run', this.params.l10n.run, () => {
       this.output.setValue('');
-      Sk.H5P.run(this.editor.getValue(), x => {
-        this.output.setValue(this.output.getValue() + x);
+      Sk.H5P.run(this.editor.getValue(), {
+        output: x => {
+          this.output.setValue(this.output.getValue() + x);
+        },
+        input: (p, resolve/*, reject*/) => {
+          p.output(p.prompt);
+          resolve(prompt(p.prompt));
+        }
       });
     });
 
@@ -79,7 +85,7 @@ export default class PythonContent {
 
     }, false);
 
-    
+
 
     //TODO
 
