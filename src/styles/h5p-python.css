@@ -100,6 +100,6 @@
 }
 
 .CodeMirror-python-highlighted-error-line {
-  background-color: #780000 !important;
-  color: #FF7777 !important;
+  background-color: #780000;
+  color: #FF7777;
 }
