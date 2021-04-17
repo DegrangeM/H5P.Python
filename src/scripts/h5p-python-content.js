@@ -91,8 +91,7 @@ export default class PythonContent {
           CodeMirror.H5P.appendText(this.output, error.toString());
           let lastLine2 = this.output.lastLine();
           for (let i = lastLine; i <= lastLine2; i++) {
-            this.output.addLineClass(i, 'background', 'CodeMirror-python-highlighted-error-line');
-            this.output.addLineClass(i, 'text', 'CodeMirror-python-highlighted-error-line');
+            this.output.addLineClass(i, 'wrap', 'CodeMirror-python-highlighted-error-line');
           }
         }
       });
