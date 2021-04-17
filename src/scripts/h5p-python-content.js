@@ -210,18 +210,10 @@ export default class PythonContent {
         }
       }
     });
-
-    /*
-    TODO
-    if (this.options.maxHeight !== 0) {
-      $container.find('.CodeMirror, .CodeMirror-scroll').css('max-height', this.options.maxHeight);
-    }
     
     if (this.options.highlightLines !== '') {
-      CodeMirror.H5P.highlightLines(this.editor, this.options.highlightLines);
-    }
-    */
-
+      CodeMirror.H5P.highlightLines(this.editor, this.params.editorOptions.highlightLines);
+    } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
 
     this.editor.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
 
