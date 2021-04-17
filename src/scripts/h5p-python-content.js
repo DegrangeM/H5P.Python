@@ -144,38 +144,43 @@ export default class PythonContent {
 
 
   createInstructions() {
-    CodeMirror.requireMode('python', () => {
-      this.instructions.innerHTML = this.params.instructions.replace(
-        /`(?:([^`<]+)|``([^`]+)``)`/g, // `XXX` or ```YYY``` ; XXX can't have html tag (so no new line)
-        (m, inlineCode, blockCode) => {
-          let code;
-          if (inlineCode) {
-            code = CodeMirror.H5P.decode(inlineCode);
+    if (this.params.instructions !== '') {
+      /*CodeMirror.requireMode('python', () => {
+        this.instructions.innerHTML = this.params.instructions.replace(
+          /`(?:([^`<]+)|``([^`]+)``)`/g, // `XXX` or ```YYY``` ; XXX can't have html tag (so no new line)
+          (m, inlineCode, blockCode) => {
+            let code;
+            if (inlineCode) {
+              code = CodeMirror.H5P.decode(inlineCode);
+            }
+            else {
+              // the code will be contaminated with the html of the WYSIWYG engine, we need to clean that. There is a new
+              // line before/after ``` so there will be </div> at the start and <div> at the end, we need to remove them.
+              let start = blockCode.indexOf('</div>') + '</div>'.length;
+              let end = blockCode.lastIndexOf('<div>') - '<div>'.length - 1;
+              // if they are not found (probably because there is no new line after/before ```) we don't highlight the code
+              if (start === -1 || end === -1) return m;
+              code = blockCode.substr(start, end).trim(); // trim will not remove wanted space at the start because code will be inside other div
+              code = new DOMParser().parseFromString(code, 'text/html').documentElement.textContent; // we get the textContent to remove the unwated html
+            }
+            let codeNode = document.createElement('pre');
+            codeNode.classList.add('cm-s-default');
+            if (inlineCode) {
+              codeNode.classList.add('h5p-python-instructions-inlineCode');
+            }
+            CodeMirror.runMode(code, 'python', codeNode);
+            return codeNode.outerHTML;
           }
-          else {
-            // the code will be contaminated with the html of the WYSIWYG engine, we need to clean that. There is a new
-            // line before/after ``` so there will be </div> at the start and <div> at the end, we need to remove them.
-            let start = blockCode.indexOf('</div>') + '</div>'.length;
-            let end = blockCode.lastIndexOf('<div>') - '<div>'.length - 1;
-            // if they are not found (probably because there is no new line after/before ```) we don't highlight the code
-            if (start === -1 || end === -1) return m;
-            code = blockCode.substr(start, end).trim(); // trim will not remove wanted space at the start because code will be inside other div
-            code = new DOMParser().parseFromString(code, 'text/html').documentElement.textContent; // we get the textContent to remove the unwated html
-          }
-          let codeNode = document.createElement('pre');
-          codeNode.classList.add('cm-s-default');
-          if (inlineCode) {
-            codeNode.classList.add('h5p-python-instructions-inlineCode');
-          }
-          CodeMirror.runMode(code, 'python', codeNode);
-          return codeNode.outerHTML;
+        );
+      }, {
+        path: function (mode) {
+          return CodeMirror.H5P.getLibraryPath() + '/mode/' + mode + '/' + mode + '.js';
         }
-      );
-    }, {
-      path: function (mode) {
-        return CodeMirror.H5P.getLibraryPath() + '/mode/' + mode + '/' + mode + '.js';
-      }
-    });
+      });*/
+    }
+    else {
+      this.instructions.style.display = 'none';
+    }
   }
 
   /**
@@ -210,7 +215,7 @@ export default class PythonContent {
         }
       }
     });
-    
+
     if (this.params.editorOptions.highlightLines !== '') {
       CodeMirror.H5P.highlightLines(this.editor, this.params.editorOptions.highlightLines);
     } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
