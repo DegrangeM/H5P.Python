@@ -41,7 +41,7 @@ export default class PythonContent {
           // it will be reverted when the promise will be resolved because it will replace the value of the editor
           this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true });
           let focusHandler = (() => {
-            this.output.setCursor({ line: lastLine, ch: lastCh });
+            this.output.goDocEnd();
           });
           /**
            * Prevent the cursor from going before the start of the input zone in the output
