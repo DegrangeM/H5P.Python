@@ -19,9 +19,7 @@ export default class PythonContent {
 
     this.createInstructions();
 
-    let instructionHandle = document.createElement('div');
-    instructionHandle.classList.add('h5p-python-instructions-handle');
-    this.content.appendChild(instructionHandle);
+
 
     this.createEditor();
 
@@ -34,16 +32,7 @@ export default class PythonContent {
     nodeOuput.classList.add('h5p-python-output');
     this.createOutput(nodeOuput);
 
-    instructionHandle.addEventListener('click', () => {
-      if (!this.instructions.classList.contains('hidden')) {
-        this.instructions.classList.add('hidden');
-        instructionHandle.classList.add('hidden');
-      }
-      else {
-        this.instructions.classList.remove('hidden');
-        instructionHandle.classList.remove('hidden');
-      }
-    });
+
 
     outputHandle.addEventListener('click', () => {
       if (!nodeOuput.classList.contains('hidden')) {
@@ -139,9 +128,11 @@ export default class PythonContent {
 
   createInstructions() {
     if (this.params.instructions !== '') {
+
       this.instructions = document.createElement('div');
       this.instructions.classList.add('h5p-python-instructions');
       this.instructions.style.maxHeight = this.params.maxHeight - 12; // 1 + 5 + 5 + 1 (border + padding + padding + border)
+      
       CodeMirror.requireMode('python', () => {
         this.instructions.innerHTML = this.params.instructions.replace(
           /`(?:([^`<]+)|``([^`]+)``)`/g, // `XXX` or ```YYY``` ; XXX can't have html tag (so no new line)
@@ -174,7 +165,24 @@ export default class PythonContent {
           return CodeMirror.H5P.getLibraryPath() + '/mode/' + mode + '/' + mode + '.js';
         }
       });
+
       this.content.appendChild(this.instructions);
+
+      let instructionHandle = document.createElement('div');
+      instructionHandle.classList.add('h5p-python-instructions-handle');
+      this.content.appendChild(instructionHandle);
+
+      instructionHandle.addEventListener('click', () => {
+        if (!this.instructions.classList.contains('hidden')) {
+          this.instructions.classList.add('hidden');
+          instructionHandle.classList.add('hidden');
+        }
+        else {
+          this.instructions.classList.remove('hidden');
+          instructionHandle.classList.remove('hidden');
+        }
+      });
+      
     }
   }
 
