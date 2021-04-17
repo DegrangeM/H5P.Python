@@ -106,7 +106,7 @@ export default class PythonContent {
           this.output.focus();
           this.output.addKeyMap({
             'name': 'sendInput',
-            'Enter': () => {
+            'Enter': () => { // Shift-Enter is not blocked and allow to send multi-lines text !
 
               let lastLine2 = this.output.lastLine();
               let lastCh2 = this.output.getLine(lastLine2).length;
