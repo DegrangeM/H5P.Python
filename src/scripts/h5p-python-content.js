@@ -19,35 +19,9 @@ export default class PythonContent {
 
     this.createInstructions();
 
-
-
     this.createEditor();
 
-    let outputHandle = document.createElement('div');
-    outputHandle.classList.add('h5p-python-output-handle');
-    this.content.appendChild(outputHandle);
-
-    let nodeOuput = document.createElement('div');
-    this.content.appendChild(nodeOuput);
-    nodeOuput.classList.add('h5p-python-output');
-    this.createOutput(nodeOuput);
-
-
-
-    outputHandle.addEventListener('click', () => {
-      if (!nodeOuput.classList.contains('hidden')) {
-        nodeOuput.classList.add('hidden');
-        outputHandle.classList.add('hidden');
-      }
-      else {
-        nodeOuput.classList.remove('hidden');
-        outputHandle.classList.remove('hidden');
-      }
-    });
-
-
-
-
+    this.createOutput();
 
     this.python.trigger('resize');
 
@@ -132,7 +106,7 @@ export default class PythonContent {
       this.instructions = document.createElement('div');
       this.instructions.classList.add('h5p-python-instructions');
       this.instructions.style.maxHeight = this.params.maxHeight - 12; // 1 + 5 + 5 + 1 (border + padding + padding + border)
-      
+
       CodeMirror.requireMode('python', () => {
         this.instructions.innerHTML = this.params.instructions.replace(
           /`(?:([^`<]+)|``([^`]+)``)`/g, // `XXX` or ```YYY``` ; XXX can't have html tag (so no new line)
@@ -182,7 +156,7 @@ export default class PythonContent {
           instructionHandle.classList.remove('hidden');
         }
       });
-      
+
     }
   }
 
@@ -236,11 +210,19 @@ export default class PythonContent {
    * Append the codemirror that will act as ouput
    * @param {HTMLElement} el  Html node to which the editor will be append.
    */
-  createOutput(el) {
+  createOutput() {
+
+    let outputHandle = document.createElement('div');
+    outputHandle.classList.add('h5p-python-output-handle');
+    this.content.appendChild(outputHandle);
+
+    let nodeOuput = document.createElement('div');
+    nodeOuput.classList.add('h5p-python-output');
+    this.content.appendChild(nodeOuput);
 
     CodeMirror.H5P.loadTheme('nord');
 
-    this.output = CodeMirror(el, {
+    this.output = CodeMirror(nodeOuput, {
       value: '',
       theme: 'nord',
       readOnly: true,
@@ -270,6 +252,17 @@ export default class PythonContent {
     });
 
     this.output.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
+
+    outputHandle.addEventListener('click', () => {
+      if (!nodeOuput.classList.contains('hidden')) {
+        nodeOuput.classList.add('hidden');
+        outputHandle.classList.add('hidden');
+      }
+      else {
+        nodeOuput.classList.remove('hidden');
+        outputHandle.classList.remove('hidden');
+      }
+    });
 
   }
 
