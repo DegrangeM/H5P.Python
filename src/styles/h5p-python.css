@@ -98,3 +98,8 @@
 .h5p-python-output .CodeMirror {
   border-left: none;
 }
+
+.CodeMirror-python-highlighted-error-line {
+  background-color: #780000;
+  color: #FF7777;
+}

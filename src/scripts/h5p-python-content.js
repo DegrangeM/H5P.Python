@@ -75,7 +75,7 @@ export default class PythonContent {
 
               readOnlyMarker.clear();
               this.output.setOption('readOnly', true);
-              
+
               this.output.getInputField().blur();
 
               resolve(this.output.getRange({ line: lastLine, ch: lastCh }, { line: lastLine2, ch: lastCh2 }));
@@ -88,11 +88,12 @@ export default class PythonContent {
         },
         onError: error => {
           let lastLine = this.output.lastLine();
-          let lastCh = this.output.getLine(lastLine).length;
-          this.output.replaceRange(error.toString(), { line: lastLine, ch: lastCh }, { line: lastLine, ch: lastCh });
+          CodeMirror.H5P.appendText(this.output, error.toString());
           let lastLine2 = this.output.lastLine();
-          let lastCh2 = this.output.getLine(lastLine2).length;
-          this.output.markText({ line: lastLine, ch: lastCh }, { line: lastLine2, ch: lastCh2 }, { css: 'color:red' });
+          for (let i = lastLine; i <= lastLine2; i++) {
+            this.output.addLineClass(i, 'background', 'CodeMirror-python-highlighted-error-line');
+            this.output.addLineClass(i, 'text', 'CodeMirror-python-highlighted-error-line');
+          }
         }
       });
     });
