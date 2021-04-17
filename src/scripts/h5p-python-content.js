@@ -211,7 +211,7 @@ export default class PythonContent {
       }
     });
     
-    if (this.options.highlightLines !== '') {
+    if (this.params.editorOptions.highlightLines !== '') {
       CodeMirror.H5P.highlightLines(this.editor, this.params.editorOptions.highlightLines);
     } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
 
