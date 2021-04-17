@@ -16,20 +16,14 @@ export default class PythonContent {
     this.content.classList.add('h5p-python-content');
     this.content.style.maxHeight = this.params.maxHeight;
 
-    this.instructions = document.createElement('div');
-    this.instructions.classList.add('h5p-python-instructions');
-    this.instructions.style.maxHeight = this.params.maxHeight - 12; // 1 + 5 + 5 + 1 (border + padding + padding + border)
+
     this.createInstructions();
-    this.content.appendChild(this.instructions);
 
     let instructionHandle = document.createElement('div');
     instructionHandle.classList.add('h5p-python-instructions-handle');
     this.content.appendChild(instructionHandle);
 
-    let nodeEditor = document.createElement('div');
-    nodeEditor.classList.add('h5p-python-editor');
-    this.content.appendChild(nodeEditor);
-    this.createEditor(nodeEditor);
+    this.createEditor();
 
     let outputHandle = document.createElement('div');
     outputHandle.classList.add('h5p-python-output-handle');
@@ -145,7 +139,10 @@ export default class PythonContent {
 
   createInstructions() {
     if (this.params.instructions !== '') {
-      /*CodeMirror.requireMode('python', () => {
+      this.instructions = document.createElement('div');
+      this.instructions.classList.add('h5p-python-instructions');
+      this.instructions.style.maxHeight = this.params.maxHeight - 12; // 1 + 5 + 5 + 1 (border + padding + padding + border)
+      CodeMirror.requireMode('python', () => {
         this.instructions.innerHTML = this.params.instructions.replace(
           /`(?:([^`<]+)|``([^`]+)``)`/g, // `XXX` or ```YYY``` ; XXX can't have html tag (so no new line)
           (m, inlineCode, blockCode) => {
@@ -176,20 +173,21 @@ export default class PythonContent {
         path: function (mode) {
           return CodeMirror.H5P.getLibraryPath() + '/mode/' + mode + '/' + mode + '.js';
         }
-      });*/
-    }
-    else {
-      this.instructions.style.display = 'none';
+      });
+      this.content.appendChild(this.instructions);
     }
   }
 
   /**
    * Append the codemirror that will act as editor
-   * @param {HTMLElement} el  Html node to which the editor will be append.
    */
-  createEditor(el) {
+  createEditor() {
 
-    this.editor = CodeMirror(el, {
+    let nodeEditor = document.createElement('div');
+    nodeEditor.classList.add('h5p-python-editor');
+    this.content.appendChild(nodeEditor);
+
+    this.editor = CodeMirror(nodeEditor, {
       value: CodeMirror.H5P.decode(this.params.startingCode || ''),
       keyMap: 'sublime',
       tabSize: this.params.editorOptions.tabSize,
