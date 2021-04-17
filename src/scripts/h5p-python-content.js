@@ -81,7 +81,12 @@ export default class PythonContent {
 
             }
           });
-          //resolve(prompt(p.prompt));
+        },
+        onSuccess: () => {
+
+        },
+        onError: error => {
+          console.log(error);
         }
       });
     });
