@@ -87,7 +87,12 @@ export default class PythonContent {
 
         },
         onError: error => {
-          console.log(error);
+          let lastLine = this.output.lastLine();
+          let lastCh = this.output.getLine(lastLine).length;
+          this.output.replaceRange(error.toString(), { line: lastLine, ch: lastCh }, { line: lastLine, ch: lastCh });
+          let lastLine2 = this.output.lastLine();
+          let lastCh2 = this.output.getLine(lastLine2).length;
+          this.output.markText({ line: lastLine, ch: lastCh }, { line: lastLine2, ch: lastCh2 }, { css: 'color:red' });
         }
       });
     });
@@ -179,6 +184,7 @@ export default class PythonContent {
       value: CodeMirror.H5P.decode(this.params.startingCode || ''),
       keyMap: 'sublime',
       tabSize: this.params.editorOptions.tabSize,
+      lineWrapping: true,
       indentWithTabs: true,
       lineNumbers: true,
       matchBrackets: true,
@@ -234,6 +240,7 @@ export default class PythonContent {
       readOnly: true,
       tabSize: 2,
       indentWithTabs: true,
+      lineWrapping: true,
       styleActiveLine: false,
       extraKeys: {
         'F11': function (cm) {
