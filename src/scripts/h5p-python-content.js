@@ -77,7 +77,9 @@ export default class PythonContent {
 
     this.python.addButton('stop', this.params.l10n.run, () => {
 
-    });
+    }, false);
+
+    
 
     //TODO
 

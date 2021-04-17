@@ -61,6 +61,8 @@ export default class Python extends H5P.Question {
       // Register content with H5P.Question
       this.setContent(content.getDOM());
 
+      window.toto = this;
+
       // Register Buttons
       this.addButtons();
 

@@ -3,16 +3,24 @@
   flex-wrap: wrap;
 }
 
-.h5p-question-run:before {
+.h5p-python  .h5p-question-run:before {
   content: '\f04b'
 }
 
-.h5p-question-stop:before {
+.h5p-python .h5p-question-stop:before {
   content: '\f04d'
 }
 
 .h5p-python .h5p-question-buttons {
   text-align: center;
+}
+
+.h5p-python .h5p-joubelui-button.disabled {
+  opacity: 0.5;
+}
+
+.h5p-python .h5p-joubelui-button.disabled:hover {
+  background-color: #1a73d9;
 }
 
 .h5p-python-instructions {
