@@ -76,7 +76,51 @@ export default class PythonContent {
         },
         input: (p, resolve/*, reject*/) => {
           p.output(p.prompt);
-          resolve(prompt(p.prompt));
+          this.output.setOption('readOnly', false);
+          let lastLine = this.output.lastLine();
+          let lastCh = this.output.getLine(lastLine).length;
+          this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true });
+          let focusHandler = (() => {
+            this.output.setCursor({ line: lastLine, ch: lastCh });
+          });
+          /**
+           * Prevent the cursor from going before the start of the input zone in the output
+           * @function
+           */
+          let cursorHandler = (() => {
+            let cursorHead = this.output.getCursor('head');
+            let cursorAnchor = this.output.getCursor('anchor');
+            if (cursorHead.line < lastLine || (cursorHead.line === lastLine && cursorHead.ch < lastCh)) {
+              cursorHead = { line: lastLine, ch: lastCh };
+            }
+            if (cursorAnchor.line < lastLine || (cursorAnchor.line === lastLine && cursorAnchor.ch < lastCh)) {
+              cursorAnchor = { line: lastLine, ch: lastCh };
+            }
+            this.output.setSelection(cursorAnchor, cursorHead);
+          });
+          this.output.on('focus', focusHandler);
+          this.output.on('cursorActivity', cursorHandler);
+          this.output.focus();
+          this.output.addKeyMap({
+            'name': 'sendInput',
+            'Enter': () => {
+
+              let lastLine2 = this.output.lastLine();
+              let lastCh2 = this.output.getLine(lastLine2).length;
+
+              p.output("\n");
+              
+              this.output.off('focus', focusHandler);
+              this.output.off('cursorActivity', cursorHandler);
+              this.output.removeKeyMap('sendInput');
+
+              this.output.setOption('readOnly', true);
+              
+              resolve(this.output.getRange({ line: lastLine, ch: lastCh }, { line: lastLine2, ch: lastCh2 }));
+            
+            }
+          });
+          //resolve(prompt(p.prompt));
         }
       });
     });
