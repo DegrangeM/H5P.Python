@@ -3,7 +3,7 @@
   flex-wrap: wrap;
 }
 
-.h5p-python  .h5p-question-run:before {
+.h5p-python .h5p-question-run:before {
   content: '\f04b'
 }
 

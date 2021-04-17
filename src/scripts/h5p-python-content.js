@@ -88,7 +88,12 @@ export default class PythonContent {
         },
         onError: error => {
           let lastLine = this.output.lastLine();
-          CodeMirror.H5P.appendText(this.output, error.toString());
+          let errorText = error.toString();
+          // Create stacktrace message
+          if (error.traceback && error.traceback.length > 1) {
+            errorText += Sk.H5P.getTraceBackFromError(error);
+          }
+          CodeMirror.H5P.appendText(this.output, errorText);
           let lastLine2 = this.output.lastLine();
           for (let i = lastLine; i <= lastLine2; i++) {
             this.output.addLineClass(i, 'wrap', 'CodeMirror-python-highlighted-error-line');
