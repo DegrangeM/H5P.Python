@@ -82,7 +82,7 @@ export default class PythonContent {
           // mark the text as readonly to prevent deletion (even if we will prevent selection before the start of input, it would be
           // possible to delete with backspace ; this prevent this).
           // it will be reverted when the promise will be resolved because it will replace the value of the editor
-          this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true }); 
+          this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true });
           let focusHandler = (() => {
             this.output.setCursor({ line: lastLine, ch: lastCh });
           });
@@ -112,15 +112,16 @@ export default class PythonContent {
               let lastCh2 = this.output.getLine(lastLine2).length;
 
               p.output("\n");
-              
+
               this.output.off('focus', focusHandler);
               this.output.off('cursorActivity', cursorHandler);
               this.output.removeKeyMap('sendInput');
 
               this.output.setOption('readOnly', true);
-              
+              this.output.getInputField().blur();
+
               resolve(this.output.getRange({ line: lastLine, ch: lastCh }, { line: lastLine2, ch: lastCh2 }));
-            
+
             }
           });
           //resolve(prompt(p.prompt));
@@ -242,9 +243,7 @@ export default class PythonContent {
       readOnly: true,
       tabSize: 2,
       indentWithTabs: true,
-      styleActiveLine: {
-        nonEmpty: true
-      },
+      styleActiveLine: false,
       extraKeys: {
         'F11': function (cm) {
           cm.setOption('fullScreen', !cm.getOption('fullScreen'));
@@ -255,6 +254,16 @@ export default class PythonContent {
           }
         }
       }
+    });
+
+    this.output.on('focus', x => {
+      this.output.setOption('styleActiveLine', {
+        nonEmpty: true
+      });
+    });
+
+    this.output.on('blur', x => {
+      this.output.setOption('styleActiveLine', false);
     });
 
     this.output.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
