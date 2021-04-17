@@ -29,7 +29,7 @@ export default class PythonContent {
       this.output.setValue('');
       Sk.H5P.run(this.editor.getValue(), {
         output: x => {
-          this.output.setValue(this.output.getValue() + x);
+          CodeMirror.H5P.appendText(this.output, x);
         },
         input: (p, resolve/*, reject*/) => {
           p.output(p.prompt);
@@ -38,8 +38,7 @@ export default class PythonContent {
           this.output.setOption('readOnly', false);
           // mark the text as readonly to prevent deletion (even if we will prevent selection before the start of input, it would be
           // possible to delete with backspace ; this prevent this).
-          // it will be reverted when the promise will be resolved because it will replace the value of the editor
-          this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true });
+          let readOnlyMarker = this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true });
           let focusHandler = (() => {
             this.output.execCommand('goDocEnd');
           });
@@ -74,7 +73,9 @@ export default class PythonContent {
               this.output.off('cursorActivity', cursorHandler);
               this.output.removeKeyMap('sendInput');
 
+              readOnlyMarker.clear();
               this.output.setOption('readOnly', true);
+              
               this.output.getInputField().blur();
 
               resolve(this.output.getRange({ line: lastLine, ch: lastCh }, { line: lastLine2, ch: lastCh2 }));
