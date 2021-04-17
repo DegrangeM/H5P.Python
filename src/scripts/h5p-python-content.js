@@ -76,10 +76,13 @@ export default class PythonContent {
         },
         input: (p, resolve/*, reject*/) => {
           p.output(p.prompt);
-          this.output.setOption('readOnly', false);
           let lastLine = this.output.lastLine();
           let lastCh = this.output.getLine(lastLine).length;
-          this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true });
+          this.output.setOption('readOnly', false);
+          // mark the text as readonly to prevent deletion (even if we will prevent selection before the start of input, it would be
+          // possible to delete with backspace ; this prevent this).
+          // it will be reverted when the promise will be resolved because it will replace the value of the editor
+          this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true }); 
           let focusHandler = (() => {
             this.output.setCursor({ line: lastLine, ch: lastCh });
           });
