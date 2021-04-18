@@ -45,7 +45,7 @@
     "description": "TODO"
   },
   {
-    "name": "advanced",
+    "name": "advancedOptions",
     "type": "group",
     "label": "Editor options",
     "fields": [
