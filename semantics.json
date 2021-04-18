@@ -52,7 +52,7 @@
     "showWhen": {
       "rules": [
         {
-          "field": "enableAdvanced",
+          "field": "enableAdvancedGrading",
           "equals": true
         }
       ]
