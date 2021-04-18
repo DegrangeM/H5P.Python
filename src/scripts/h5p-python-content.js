@@ -16,6 +16,7 @@ export default class PythonContent {
     this.content.classList.add('h5p-python-content');
     this.content.style.maxHeight = this.params.editorOptions.maxHeight;
 
+    // todo : ability to set some line as ready only, notation 5,8,10-12,14.4-14.8
 
     this.createInstructions();
 
@@ -119,17 +120,12 @@ export default class PythonContent {
         }
       },
       onError: error => {
-        let lastLine = this.output.lastLine();
         let errorText = error.toString();
         // Create stacktrace message
         if (error.traceback && error.traceback.length > 1) {
           errorText += Sk.H5P.getTraceBackFromError(error);
         }
-        CodeMirror.H5P.appendText(this.output, errorText);
-        let lastLine2 = this.output.lastLine();
-        for (let i = lastLine; i <= lastLine2; i++) {
-          this.output.addLineClass(i, 'wrap', 'CodeMirror-python-highlighted-error-line');
-        }
+        CodeMirror.H5P.appendText(this.output, errorText, 'CodeMirror-python-highlighted-error-line');
       },
       onFinally: () => {
         this.python.showButton('run');
@@ -154,23 +150,64 @@ export default class PythonContent {
       this.python.showButton('try-again');
     }
 
+    let userOutput = '';
+    let solOutput = '';
+
     Sk.H5P.run(this.editor.getValue(), {
       output: x => {
-        CodeMirror.H5P.appendText(this.output, x);
+        userOutput += x;
       },
       input: (p, resolve/*, reject*/) => {
         resolve(''); // todo
       },
       onSuccess: () => {
-        
+
       },
-      onError: error => {
+      onError: () => {
 
       },
       onFinally: () => {
 
       },
       shouldStop: () => this.shouldStop
+    }).then(() => {
+      return Sk.H5P.run(CodeMirror.H5P.decode(this.params.solutionCode), {
+        output: x => {
+          solOutput += x;
+        },
+        input: (p, resolve/*, reject*/) => {
+          resolve(''); // todo
+        },
+        onSuccess: () => {
+
+        },
+        onError: () => {
+          // todo
+        },
+        onFinally: () => {
+
+        },
+        shouldStop: () => this.shouldStop // todo
+      });
+    }).then(() => {
+      if (userOutput === solOutput) {
+        // SUCCESS todo
+      } else {
+        // todo : localize
+        this.output.setValue('');
+        let outputText = '';
+        outputText += 'Output Missmatch\n';
+        outputText += '----------------\n';
+        outputText += 'Expected output :\n';
+        outputText += '----------------\n';
+        outputText += solOutput;/*
+        outputText += '----------------\n';
+        outputText += 'Current output :\n';
+        outputText += '----------------\n';
+        outputText += userOutput;*/
+
+        CodeMirror.H5P.appendText(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
+      }
     });
   }
 
