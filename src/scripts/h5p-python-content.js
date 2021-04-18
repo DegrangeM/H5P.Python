@@ -121,12 +121,19 @@ export default class PythonContent {
         }
       },
       onError: error => {
-        let errorText = error.toString();
-        // Create stacktrace message
-        if (error.traceback && error.traceback.length > 1) {
-          errorText += Sk.H5P.getTraceBackFromError(error);
+        let errorText;
+        if (this.shouldStop) {
+          errorText = 'Execution interrupted';
+        }
+        else {
+          errorText = error.toString();
+          // Create stacktrace message
+          if (error.traceback && error.traceback.length > 1) {
+            errorText += Sk.H5P.getTraceBackFromError(error);
+          }
         }
         CodeMirror.H5P.appendLines(this.output, errorText, 'CodeMirror-python-highlighted-error-line');
+
       },
       onFinally: () => {
         this.python.showButton('run');
@@ -138,7 +145,7 @@ export default class PythonContent {
 
   stop() {
     this.shouldStop = true;
-    if(this.rejectInput !== undefined) {
+    if (this.rejectInput !== undefined) {
       this.rejectInput('Interrupted execution');
     }
   }
