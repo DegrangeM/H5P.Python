@@ -200,11 +200,11 @@ export default class PythonContent {
         outputText += '----------------\n';
         outputText += 'Expected output :\n';
         outputText += '----------------\n';
-        outputText += solOutput;/*
+        outputText += solOutput;
         outputText += '----------------\n';
         outputText += 'Current output :\n';
         outputText += '----------------\n';
-        outputText += userOutput;*/
+        outputText += userOutput;
 
         CodeMirror.H5P.appendText(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
       }
