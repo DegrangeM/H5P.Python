@@ -26,84 +26,11 @@ export default class PythonContent {
     this.python.trigger('resize');
 
     this.python.addButton('run', this.params.l10n.run, () => {
-      this.output.setValue('');
-      Sk.H5P.run(this.editor.getValue(), {
-        output: x => {
-          CodeMirror.H5P.appendText(this.output, x);
-        },
-        input: (p, resolve/*, reject*/) => {
-          p.output(p.prompt);
-          let lastLine = this.output.lastLine();
-          let lastCh = this.output.getLine(lastLine).length;
-          this.output.setOption('readOnly', false);
-          // mark the text as readonly to prevent deletion (even if we will prevent selection before the start of input, it would be
-          // possible to delete with backspace ; this prevent this).
-          let readOnlyMarker = this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true });
-          let focusHandler = (() => {
-            this.output.execCommand('goDocEnd');
-          });
-          /**
-           * Prevent the cursor from going before the start of the input zone in the output
-           * @function
-           */
-          let cursorHandler = (() => {
-            let cursorHead = this.output.getCursor('head');
-            let cursorAnchor = this.output.getCursor('anchor');
-            if (cursorHead.line < lastLine || (cursorHead.line === lastLine && cursorHead.ch < lastCh)) {
-              cursorHead = { line: lastLine, ch: lastCh };
-            }
-            if (cursorAnchor.line < lastLine || (cursorAnchor.line === lastLine && cursorAnchor.ch < lastCh)) {
-              cursorAnchor = { line: lastLine, ch: lastCh };
-            }
-            this.output.setSelection(cursorAnchor, cursorHead);
-          });
-          this.output.on('focus', focusHandler);
-          this.output.on('cursorActivity', cursorHandler);
-          this.output.focus();
-          this.output.addKeyMap({
-            'name': 'sendInput',
-            'Enter': () => { // Shift-Enter is not blocked and allow to send multi-lines text !
-
-              let lastLine2 = this.output.lastLine();
-              let lastCh2 = this.output.getLine(lastLine2).length;
-
-              p.output("\n");
-
-              this.output.off('focus', focusHandler);
-              this.output.off('cursorActivity', cursorHandler);
-              this.output.removeKeyMap('sendInput');
-
-              readOnlyMarker.clear();
-              this.output.setOption('readOnly', true);
-
-              this.output.getInputField().blur();
-
-              resolve(this.output.getRange({ line: lastLine, ch: lastCh }, { line: lastLine2, ch: lastCh2 }));
-
-            }
-          });
-        },
-        onSuccess: () => {
-
-        },
-        onError: error => {
-          let lastLine = this.output.lastLine();
-          let errorText = error.toString();
-          // Create stacktrace message
-          if (error.traceback && error.traceback.length > 1) {
-            errorText += Sk.H5P.getTraceBackFromError(error);
-          }
-          CodeMirror.H5P.appendText(this.output, errorText);
-          let lastLine2 = this.output.lastLine();
-          for (let i = lastLine; i <= lastLine2; i++) {
-            this.output.addLineClass(i, 'wrap', 'CodeMirror-python-highlighted-error-line');
-          }
-        }
-      });
+      this.run();
     });
 
-    this.python.addButton('stop', this.params.l10n.run, () => {
-
+    this.python.addButton('stop', this.params.l10n.stop, () => {
+      this.stop();
     }, false);
 
 
@@ -115,6 +42,100 @@ export default class PythonContent {
     // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
   }
 
+  /**
+   * Function to run the python code
+   */
+  run() {
+
+    this.shouldStop = false;
+
+    this.python.hideButton('run');
+    this.python.showButton('stop');
+
+    this.output.setValue('');
+    Sk.H5P.run(this.editor.getValue(), {
+      output: x => {
+        CodeMirror.H5P.appendText(this.output, x);
+      },
+      input: (p, resolve/*, reject*/) => {
+        p.output(p.prompt);
+        let lastLine = this.output.lastLine();
+        let lastCh = this.output.getLine(lastLine).length;
+        this.output.setOption('readOnly', false);
+        // mark the text as readonly to prevent deletion (even if we will prevent selection before the start of input, it would be
+        // possible to delete with backspace ; this prevent this).
+        let readOnlyMarker = this.output.markText({ line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, { readOnly: true });
+        let focusHandler = (() => {
+          this.output.execCommand('goDocEnd');
+        });
+        /**
+         * Prevent the cursor from going before the start of the input zone in the output
+         * @function
+         */
+        let cursorHandler = (() => {
+          let cursorHead = this.output.getCursor('head');
+          let cursorAnchor = this.output.getCursor('anchor');
+          if (cursorHead.line < lastLine || (cursorHead.line === lastLine && cursorHead.ch < lastCh)) {
+            cursorHead = { line: lastLine, ch: lastCh };
+          }
+          if (cursorAnchor.line < lastLine || (cursorAnchor.line === lastLine && cursorAnchor.ch < lastCh)) {
+            cursorAnchor = { line: lastLine, ch: lastCh };
+          }
+          this.output.setSelection(cursorAnchor, cursorHead);
+        });
+        this.output.on('focus', focusHandler);
+        this.output.on('cursorActivity', cursorHandler);
+        this.output.focus();
+        this.output.addKeyMap({
+          'name': 'sendInput',
+          'Enter': () => { // Shift-Enter is not blocked and allow to send multi-lines text !
+
+            let lastLine2 = this.output.lastLine();
+            let lastCh2 = this.output.getLine(lastLine2).length;
+
+            p.output("\n");
+
+            this.output.off('focus', focusHandler);
+            this.output.off('cursorActivity', cursorHandler);
+            this.output.removeKeyMap('sendInput');
+
+            readOnlyMarker.clear();
+            this.output.setOption('readOnly', true);
+
+            this.output.getInputField().blur();
+
+            resolve(this.output.getRange({ line: lastLine, ch: lastCh }, { line: lastLine2, ch: lastCh2 }));
+
+          }
+        });
+      },
+      onSuccess: () => {
+
+      },
+      onError: error => {
+        let lastLine = this.output.lastLine();
+        let errorText = error.toString();
+        // Create stacktrace message
+        if (error.traceback && error.traceback.length > 1) {
+          errorText += Sk.H5P.getTraceBackFromError(error);
+        }
+        CodeMirror.H5P.appendText(this.output, errorText);
+        let lastLine2 = this.output.lastLine();
+        for (let i = lastLine; i <= lastLine2; i++) {
+          this.output.addLineClass(i, 'wrap', 'CodeMirror-python-highlighted-error-line');
+        }
+      },
+      onFinally: () => {
+        this.python.showButton('run');
+        this.python.hideButton('stop');
+      },
+      shouldStop: () => this.shouldStop
+    });
+  }
+
+  stop() {
+    this.shouldStop = true;
+  }
 
   createInstructions() {
     if (this.params.instructions !== '') {
@@ -209,6 +230,9 @@ export default class PythonContent {
           if (cm.getOption('fullScreen')) {
             cm.setOption('fullScreen', false);
           }
+        },
+        'Ctrl-Enter': () => {
+          this.run();
         }
       }
     });
