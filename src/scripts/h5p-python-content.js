@@ -62,7 +62,8 @@ export default class PythonContent {
       output: x => {
         CodeMirror.H5P.appendText(this.output, x);
       },
-      input: (p, resolve/*, reject*/) => {
+      input: (p, resolve, reject) => {
+        this.rejectInput = reject;
         p.output(p.prompt);
         let lastLine = this.output.lastLine();
         let lastCh = this.output.getLine(lastLine).length;
@@ -137,6 +138,9 @@ export default class PythonContent {
 
   stop() {
     this.shouldStop = true;
+    if(this.rejectInput !== undefined) {
+      this.rejectInput('Interrupted execution');
+    }
   }
 
   checkAnswer() {
