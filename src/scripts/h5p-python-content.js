@@ -33,6 +33,10 @@ export default class PythonContent {
       this.stop();
     }, false);
 
+    this.python.addButton('check-answer', this.params.l10n.checkAnswer, () => {
+      this.checkAnswer();
+    }, !this.params.requireRunBeforeCheck, {}, {});
+
 
 
     //TODO
@@ -110,7 +114,9 @@ export default class PythonContent {
         });
       },
       onSuccess: () => {
-
+        if (this.params.requireRunBeforeCheck) {
+          this.python.showButton('check-answer');
+        }
       },
       onError: error => {
         let lastLine = this.output.lastLine();
@@ -135,6 +141,18 @@ export default class PythonContent {
 
   stop() {
     this.shouldStop = true;
+  }
+
+  checkAnswer() {
+    this.python.hideButton('check-answer');
+
+    if (this.params.behaviour.enableSolutionsButton) {
+      this.python.showButton('show-solution');
+    }
+
+    if (this.params.behaviour.enableRetry) {
+      this.python.showButton('try-again');
+    }
   }
 
   createInstructions() {
@@ -240,6 +258,12 @@ export default class PythonContent {
     if (this.params.editorOptions.highlightLines !== '') {
       CodeMirror.H5P.highlightLines(this.editor, this.params.editorOptions.highlightLines);
     } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
+
+    if (this.params.requireRunBeforeCheck) {
+      this.editor.on('changes', () => {
+        this.python.hideButton('check-answer');
+      });
+    }
 
     this.editor.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
 
