@@ -126,7 +126,7 @@ export default class PythonContent {
         if (error.traceback && error.traceback.length > 1) {
           errorText += Sk.H5P.getTraceBackFromError(error);
         }
-        CodeMirror.H5P.appendText(this.output, errorText, 'CodeMirror-python-highlighted-error-line');
+        CodeMirror.H5P.appendLines(this.output, errorText, 'CodeMirror-python-highlighted-error-line');
       },
       onFinally: () => {
         this.python.showButton('run');
