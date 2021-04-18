@@ -48,6 +48,15 @@
     "name": "advancedOptions",
     "type": "group",
     "label": "Editor options",
+    "widget": "showWhen",
+    "showWhen": {
+      "rules": [
+        {
+          "field": "showAdvanced",
+          "equals": true
+        }
+      ]
+    },
     "fields": [
       {
         "name": "qdfqdsf",
