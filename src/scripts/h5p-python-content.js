@@ -14,7 +14,7 @@ export default class PythonContent {
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
-    this.content.style.maxHeight = this.params.maxHeight;
+    this.content.style.maxHeight = this.params.editorOptions.maxHeight;
 
 
     this.createInstructions();
@@ -142,7 +142,7 @@ export default class PythonContent {
 
       this.instructions = document.createElement('div');
       this.instructions.classList.add('h5p-python-instructions');
-      this.instructions.style.maxHeight = this.params.maxHeight - 12; // 1 + 5 + 5 + 1 (border + padding + padding + border)
+      this.instructions.style.maxHeight = this.params.editorOptions.maxHeight - 12; // 1 + 5 + 5 + 1 (border + padding + padding + border)
 
       CodeMirror.requireMode('python', () => {
         this.instructions.innerHTML = this.params.instructions.replace(
