@@ -326,6 +326,10 @@ export default class PythonContent {
       CodeMirror.H5P.highlightLines(this.editor, this.params.editorOptions.highlightLines);
     } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
 
+    if (this.params.editorOptions.readOnlyLines !== '') {
+      CodeMirror.H5P.readOnlyLines(this.editor, this.params.editorOptions.readOnlyLines);
+    } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
+
     if (this.params.requireRunBeforeCheck) {
       this.editor.on('changes', () => {
         this.python.hideButton('check-answer');
