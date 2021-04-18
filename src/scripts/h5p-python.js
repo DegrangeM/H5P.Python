@@ -35,6 +35,9 @@ export default class Python extends H5P.Question {
 
     // Make sure all variables are set
     this.params = extend({
+      editorOptions: {
+        readOnlyLines: ''
+      },
       behaviour: {
         enableSolutionsButton: true,
         enableRetry: true
@@ -48,6 +51,11 @@ export default class Python extends H5P.Question {
 
     // this.previousState now holds the saved content state of the previous session
     this.previousState = this.extras.previousState || {};
+
+    this.answerGiven = false;
+    this.score = 0;
+    this.maxScore = 1;
+    this.passed = false;
 
     /**
      * Register the DOM elements with H5P.Question
@@ -113,7 +121,7 @@ export default class Python extends H5P.Question {
      * @return {boolean} True, if answer was given.
      * @see contract at {@link https://h5p.org/documentation/developers/contracts#guides-header-1}
      */
-    this.getAnswerGiven = () => false; // TODO: Return your value here
+    this.getAnswerGiven = () => this.answerGiven; // TODO: Return your value here
 
     /**
      * Get latest score.
@@ -121,7 +129,7 @@ export default class Python extends H5P.Question {
      * @return {number} latest score.
      * @see contract at {@link https://h5p.org/documentation/developers/contracts#guides-header-2}
      */
-    this.getScore = () => 0; // TODO: Return real score here
+    this.getScore = () => this.score; // TODO: Return real score here
 
     /**
      * Get maximum possible score.
@@ -129,7 +137,7 @@ export default class Python extends H5P.Question {
      * @return {number} Score necessary for mastering.
      * @see contract at {@link https://h5p.org/documentation/developers/contracts#guides-header-3}
      */
-    this.getMaxScore = () => 0; // TODO: Return real maximum score here
+    this.getMaxScore = () => this.maxScore; // TODO: Return real maximum score here
 
     /**
      * Show solutions.
@@ -223,7 +231,7 @@ export default class Python extends H5P.Question {
      *
      * @return {boolean} True if user passed or task is not scored.
      */
-    this.isPassed = () => true;
+    this.isPassed = () => this.passed;
 
     /**
      * Get tasks title.

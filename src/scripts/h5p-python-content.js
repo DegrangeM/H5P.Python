@@ -151,6 +151,11 @@ export default class PythonContent {
   }
 
   checkAnswer() {
+
+    this.stop();
+    this.python.hideButton('run');
+    this.output.setValue('');
+
     this.python.hideButton('check-answer');
 
     if (this.params.behaviour.enableSolutionsButton) {
@@ -202,9 +207,12 @@ export default class PythonContent {
       });
     }).then(() => {
       if (userOutput === solOutput) {
-        // SUCCESS todo
+        this.python.answerGiven = true;
+        this.python.score = 1;
+        this.python.passed = true;
       } else {
         // todo : localize
+      
         this.output.setValue('');
         let outputText = '';
         outputText += 'Output Missmatch\n';
@@ -217,7 +225,11 @@ export default class PythonContent {
         outputText += '----------------\n';
         outputText += userOutput;
 
-        CodeMirror.H5P.appendText(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
+        CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
+
+        this.python.answerGiven = true;
+        this.python.score = 0;
+        this.python.passed = false;
       }
     });
   }
