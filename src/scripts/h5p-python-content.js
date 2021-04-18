@@ -153,6 +153,25 @@ export default class PythonContent {
     if (this.params.behaviour.enableRetry) {
       this.python.showButton('try-again');
     }
+
+    Sk.H5P.run(this.editor.getValue(), {
+      output: x => {
+        CodeMirror.H5P.appendText(this.output, x);
+      },
+      input: (p, resolve/*, reject*/) => {
+        resolve(''); // todo
+      },
+      onSuccess: () => {
+        
+      },
+      onError: error => {
+
+      },
+      onFinally: () => {
+
+      },
+      shouldStop: () => this.shouldStop
+    });
   }
 
   createInstructions() {
