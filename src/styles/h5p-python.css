@@ -116,15 +116,3 @@
 .h5p-python .h5p-question-buttons.has-scorebar {
   width: calc(100% - 1.5em);
 }
-
-@media screen and (max-width: 800px) {
-  * {
-    color:red !important;
-  }
-  .h5p-python-instructions, .h5p-python-editor, .h5p-python-output {
-    height: 50%;
-  }
-  .h5p-python-content {
-    height:200%;
-  }
-}
