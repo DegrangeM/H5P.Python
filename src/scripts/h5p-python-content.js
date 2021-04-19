@@ -14,7 +14,7 @@ export default class PythonContent {
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
-    // this.content.style.maxHeight = this.params.editorOptions.maxHeight;
+    this.content.style.maxHeight = this.params.editorOptions.maxHeight;
 
     // todo : ability to set some line as ready only, notation 5,8,10-12,14.4-14.8
 
@@ -258,7 +258,6 @@ export default class PythonContent {
 
       this.instructions = document.createElement('div');
       this.instructions.classList.add('h5p-python-instructions');
-      this.instructions.style.maxHeight = this.params.editorOptions.maxHeight;
 
       CodeMirror.requireMode('python', () => {
         this.instructions.innerHTML = this.params.instructions.replace(
@@ -320,7 +319,6 @@ export default class PythonContent {
 
     let nodeEditor = document.createElement('div');
     nodeEditor.classList.add('h5p-python-editor');
-    nodeEditor.style.maxHeight = this.params.editorOptions.maxHeight;
     this.content.appendChild(nodeEditor);
 
     this.editor = CodeMirror(nodeEditor, {
@@ -386,7 +384,6 @@ export default class PythonContent {
 
     let nodeOutput = document.createElement('div');
     nodeOutput.classList.add('h5p-python-output');
-    nodeOutput.style.maxHeight = this.params.editorOptions.maxHeight;
     this.content.appendChild(nodeOutput);
 
     CodeMirror.H5P.loadTheme('nord');
