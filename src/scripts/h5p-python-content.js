@@ -200,7 +200,7 @@ export default class PythonContent {
 
     // tood solution empty ? How to check !
 
-    Sk.H5P.run(this.editor.getValue(), {
+    Sk.H5P.run(this.getCodeToRun(this.editor.getValue()), {
       output: x => {
         userOutput += x;
       },
@@ -212,7 +212,7 @@ export default class PythonContent {
     }).catch((error) => {
       runError = error;
     }).then(() => {
-      return Sk.H5P.run(CodeMirror.H5P.decode(this.params.solutionCode), {
+      return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode)), {
         output: x => {
           solOutput += x;
         },
