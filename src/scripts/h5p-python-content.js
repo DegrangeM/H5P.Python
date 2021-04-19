@@ -15,6 +15,8 @@ export default class PythonContent {
     this.params = python.params;
     // this.callbacks = callbacks;
 
+    this.executeBeforeCode = this.params.advancedGrading.executeBeforeCode;
+
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
     this.content.style.maxHeight = this.params.editorOptions.maxHeight;
@@ -144,7 +146,7 @@ export default class PythonContent {
         else {
           if (error.traceback && this.params.enableAdvancedGrading) {
             // if code was added before, substract the length of added code to preserve line number error.
-            let addedCodeLength = this.params.advancedGrading.executeBeforeCode.split('\n').length;
+            let addedCodeLength = this.executeBeforeCode.split('\n').length;
             error.traceback.forEach(v => {
               if (v.filename === '<stdin>.py') {
                 v.lineno -= addedCodeLength;
@@ -468,8 +470,8 @@ export default class PythonContent {
    */
   getCodeToRun(code) {
     let codeToRun = code;
-    if (this.params.enableAdvancedGrading && this.params.advancedGrading.executeBeforeCode) {
-      codeToRun = CodeMirror.H5P.decode(this.params.advancedGrading.executeBeforeCode) + '\n' + codeToRun;
+    if (this.params.enableAdvancedGrading && this.executeBeforeCode) {
+      codeToRun = CodeMirror.H5P.decode(this.executeBeforeCode) + codeToRun;
     }
     return codeToRun;
   }
