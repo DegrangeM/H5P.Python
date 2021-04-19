@@ -59,11 +59,31 @@
     },
     "fields": [
       {
-        "name": "qdfqdsf",
-        "type": "text",
-        "label": "Show advanced options",
+        "name": "maxScore",
+        "type": "number",
+        "label": "Max Score",
         "description": "TODO",
-        "optional": true
+        "default": 1,
+        "min": 1,
+        "step": 1
+      },
+      {
+        "name": "executeBeforeCode",
+        "type": "text",
+        "optional": true,
+        "widget": "codeEditor",
+        "language": "python",
+        "label": "Code to execute before",
+        "description": "TODO"
+      },
+      {
+        "name": "gradingCode",
+        "type": "text",
+        "optional": true,
+        "widget": "codeEditor",
+        "language": "python",
+        "label": "Grading Code",
+        "description": "TODO"
       }
     ]
   },
