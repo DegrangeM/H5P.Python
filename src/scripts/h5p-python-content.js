@@ -15,7 +15,7 @@ export default class PythonContent {
     this.params = python.params;
     // this.callbacks = callbacks;
 
-    this.executeBeforeCode = this.params.advancedGrading.executeBeforeCode;
+    this.executeBeforeCode = this.getInjectedApi() + '\n' + CodeMirror.H5P.decode(this.params.advancedGrading.executeBeforeCode) + '\n';
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
@@ -61,6 +61,7 @@ export default class PythonContent {
 
     window.editor = this.editor;
     window.output = this.output;
+    window.tutu = this;
     // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
   }
 
@@ -146,7 +147,7 @@ export default class PythonContent {
         else {
           if (error.traceback && this.params.enableAdvancedGrading) {
             // if code was added before, substract the length of added code to preserve line number error.
-            let addedCodeLength = this.executeBeforeCode.split('\n').length;
+            let addedCodeLength = this.executeBeforeCode.split('\n').length - 1; // +1 because of \n
             error.traceback.forEach(v => {
               if (v.filename === '<stdin>.py') {
                 v.lineno -= addedCodeLength;
@@ -471,11 +472,27 @@ export default class PythonContent {
   getCodeToRun(code) {
     let codeToRun = code;
     if (this.params.enableAdvancedGrading && this.executeBeforeCode) {
-      codeToRun = CodeMirror.H5P.decode(this.executeBeforeCode) + codeToRun;
+      codeToRun = this.executeBeforeCode + codeToRun;
     }
     return codeToRun;
   }
 
+  getInjectedApi() {
+    let api = '';
+    //api += 'class H5P :';
+    //api += '  ';
+    return api;
+  }
+
+  /*
+    Give abiltiy to check code for multiple cases ?
+
+    → a function to get the ouput (as a unique string or as an array of string)
+
+    → a function to display a feedback message
+
+    → a function to set score to the user
+  */
 
   /**
    * Return the DOM for this class.
