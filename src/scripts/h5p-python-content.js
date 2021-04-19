@@ -238,7 +238,7 @@ export default class PythonContent {
 
         CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
 
-        this.python.setFeedback('Output Missmatch', 0, 1, 'scorebarlabel', '<pre>' + outputText + '</pre>', { showAsPopup: true }/*, 'explanationbuttonlabel'*/);
+        this.python.setFeedback('Output Missmatch', 0, 1, 'scorebarlabel', '<pre style="white-space:pre-wrap;">' + outputText + '</pre>', { showAsPopup: true }/*, 'explanationbuttonlabel'*/);
 
         this.python.answerGiven = true;
         this.python.score = 0;
