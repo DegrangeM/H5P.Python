@@ -248,6 +248,7 @@ export default class Python extends H5P.Question {
     function extend() {
       for (let i = 1; i < arguments.length; i++) {
         for (let key in arguments[i]) {
+          // eslint-disable-next-line no-prototype-builtins
           if (arguments[i].hasOwnProperty(key)) {
             if (typeof arguments[0][key] === 'object' && typeof arguments[i][key] === 'object') {
               extend(arguments[0][key], arguments[i][key]);

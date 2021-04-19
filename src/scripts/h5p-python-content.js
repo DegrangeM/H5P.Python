@@ -221,7 +221,8 @@ export default class PythonContent {
         this.python.answerGiven = true;
         this.python.score = 1;
         this.python.passed = true;
-      } else {
+      }
+      else {
         this.output.setValue('');
         let outputText = '';
         if (!runError) {
@@ -408,13 +409,13 @@ export default class PythonContent {
       }
     });
 
-    this.output.on('focus', x => {
+    this.output.on('focus', () => {
       this.output.setOption('styleActiveLine', {
         nonEmpty: true
       });
     });
 
-    this.output.on('blur', x => {
+    this.output.on('blur', () => {
       this.output.setOption('styleActiveLine', false);
     });
 
