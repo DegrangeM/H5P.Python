@@ -38,6 +38,9 @@ export default class PythonContent {
       this.checkAnswer();
     }, !this.params.requireRunBeforeCheck, {}, {});
 
+    this.python.addButton('show-solution', this.params.l10n.showSolution, () => {
+      // TODO: Implement something useful to do on click
+    }, false, {}, {});
 
 
     //TODO

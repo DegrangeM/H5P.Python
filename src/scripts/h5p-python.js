@@ -84,24 +84,6 @@ export default class Python extends H5P.Question {
      * Add all the buttons that shall be passed to H5P.Question.
      */
     this.addButtons = () => {
-      // Check answer button
-      this.addButton('check-answer', this.params.l10n.checkAnswer, () => {
-        // TODO: Implement something useful to do on click
-        this.hideButton('check-answer');
-
-        if (this.params.behaviour.enableSolutionsButton) {
-          this.showButton('show-solution');
-        }
-
-        if (this.params.behaviour.enableRetry) {
-          this.showButton('try-again');
-        }
-      }, true, {}, {});
-
-      // Show solution button
-      this.addButton('show-solution', this.params.l10n.showSolution, () => {
-        // TODO: Implement something useful to do on click
-      }, false, {}, {});
 
       // Retry button
       this.addButton('try-again', this.params.l10n.tryAgain, () => {
