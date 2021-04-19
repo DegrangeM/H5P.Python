@@ -103,3 +103,7 @@
   background-color: #780000;
   color: #FF7777;
 }
+
+.h5p-python .h5p-question-buttons.has-scorebar {
+  width: calc(100% - 1.5em);
+}
