@@ -73,7 +73,8 @@ export default class PythonContent {
     this.python.showButton('stop');
 
     this.output.setValue('');
-    Sk.H5P.run(this.editor.getValue(), {
+
+    Sk.H5P.run(this.getCodeToRun(this.editor.getValue()), {
       output: x => {
         CodeMirror.H5P.appendText(this.output, x);
       },
@@ -142,9 +143,11 @@ export default class PythonContent {
         }
         else {
           if (error.traceback && this.params.enableAdvancedGrading) {
+            // if code was added before, substract the length of added code to preserve line number error.
+            let addedCodeLength = this.params.advancedGrading.executeBeforeCode.split('\n').length;
             error.traceback.forEach(v => {
               if (v.filename === '<stdin>.py') {
-                v.lineno -=  this.params.advancedGrading.executeBeforeCode.length;
+                v.lineno -= addedCodeLength;
               }
             });
           }
@@ -177,6 +180,7 @@ export default class PythonContent {
     this.stop();
     this.shouldStop = false;
     this.python.hideButton('run');
+    this.python.showButton('stop');
 
     this.python.hideButton('check-answer');
 
@@ -216,6 +220,8 @@ export default class PythonContent {
         shouldStop: () => this.shouldStop // todo
       });
     }).finally(() => {
+      this.python.hideButton('stop');
+
       if (!runError && userOutput === solOutput) {
         this.output.setValue(userOutput);
 
@@ -455,6 +461,18 @@ export default class PythonContent {
 
   }
 
+  /**
+   * It is possible to add code to run before / after user code.
+   * This function return the code with the added code.
+   * @param {string} code 
+   */
+  getCodeToRun(code) {
+    let codeToRun = code;
+    if (this.params.enableAdvancedGrading && this.params.advancedGrading.executeBeforeCode) {
+      codeToRun = CodeMirror.H5P.decode(this.params.advancedGrading.executeBeforeCode) + '\n' + codeToRun;
+    }
+    return codeToRun;
+  }
 
 
   /**
