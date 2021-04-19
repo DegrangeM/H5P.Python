@@ -141,6 +141,14 @@ export default class PythonContent {
           errorText = 'Execution interrupted';
         }
         else {
+          if (error.traceback && this.params.enableAdvancedGrading) {
+            error.traceback.forEach(v => {
+              if (v.filename === '<stdin>.py') {
+                v.lineno -=  this.params.advancedGrading.executeBeforeCode.length;
+              }
+            });
+          }
+
           errorText = error.toString();
           // Create stacktrace message
           if (error.traceback && error.traceback.length > 1) {
@@ -193,6 +201,7 @@ export default class PythonContent {
       input: (p, resolve/*, reject*/) => {
         resolve(''); // todo
       },
+      chain: true,
       shouldStop: () => this.shouldStop
     }).catch((error) => {
       runError = error;
