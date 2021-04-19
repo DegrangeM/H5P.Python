@@ -14,7 +14,7 @@ export default class PythonContent {
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
-    this.content.style.maxHeight = this.params.editorOptions.maxHeight;
+    // this.content.style.maxHeight = this.params.editorOptions.maxHeight;
 
     // todo : ability to set some line as ready only, notation 5,8,10-12,14.4-14.8
 
@@ -43,6 +43,9 @@ export default class PythonContent {
     }, false, {}, {});
 
 
+    // window.addEventListener('resize', () => {
+    //   this.python.trigger('rezise');
+    // });
     //TODO
 
     window.editor = this.editor;
@@ -255,7 +258,7 @@ export default class PythonContent {
 
       this.instructions = document.createElement('div');
       this.instructions.classList.add('h5p-python-instructions');
-      this.instructions.style.maxHeight = this.params.editorOptions.maxHeight - 12; // 1 + 5 + 5 + 1 (border + padding + padding + border)
+      this.instructions.style.maxHeight = this.params.editorOptions.maxHeight;
 
       CodeMirror.requireMode('python', () => {
         this.instructions.innerHTML = this.params.instructions.replace(
@@ -317,6 +320,7 @@ export default class PythonContent {
 
     let nodeEditor = document.createElement('div');
     nodeEditor.classList.add('h5p-python-editor');
+    nodeEditor.style.maxHeight = this.params.editorOptions.maxHeight;
     this.content.appendChild(nodeEditor);
 
     this.editor = CodeMirror(nodeEditor, {
@@ -380,13 +384,14 @@ export default class PythonContent {
     outputHandle.classList.add('h5p-python-output-handle');
     this.content.appendChild(outputHandle);
 
-    let nodeOuput = document.createElement('div');
-    nodeOuput.classList.add('h5p-python-output');
-    this.content.appendChild(nodeOuput);
+    let nodeOutput = document.createElement('div');
+    nodeOutput.classList.add('h5p-python-output');
+    nodeOutput.style.maxHeight = this.params.editorOptions.maxHeight;
+    this.content.appendChild(nodeOutput);
 
     CodeMirror.H5P.loadTheme('nord');
 
-    this.output = CodeMirror(nodeOuput, {
+    this.output = CodeMirror(nodeOutput, {
       value: '',
       theme: 'nord',
       readOnly: true,
@@ -419,12 +424,12 @@ export default class PythonContent {
     this.output.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
 
     outputHandle.addEventListener('click', () => {
-      if (!nodeOuput.classList.contains('hidden')) {
-        nodeOuput.classList.add('hidden');
+      if (!nodeOutput.classList.contains('hidden')) {
+        nodeOutput.classList.add('hidden');
         outputHandle.classList.add('hidden');
       }
       else {
-        nodeOuput.classList.remove('hidden');
+        nodeOutput.classList.remove('hidden');
         outputHandle.classList.remove('hidden');
       }
     });
