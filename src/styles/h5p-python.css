@@ -43,14 +43,15 @@
   min-width: 200px;
 }
 
-.h5p-python-editor .CodeMirror, .h5p-python-output .CodeMirror {
+.h5p-python-codeEditor .CodeMirror, .h5p-python-output .CodeMirror {
   box-sizing: border-box;
 }
 
-.h5p-python-editor {
+.h5p-python-codeEditor {
   flex: 4;
   max-height: inherit;
   min-width: 400px;
+  display: flex;
 }
 
 .h5p-python-instructions.hidden, .h5p-python-output.hidden {
@@ -62,6 +63,7 @@
   max-height: inherit;
   border-left: none;
   border-right: none;
+  flex: 1;
 }
 
 .h5p-python-instructions-handle, .h5p-python-output-handle {

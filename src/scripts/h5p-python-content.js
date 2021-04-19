@@ -306,9 +306,13 @@ export default class PythonContent {
    */
   createEditor() {
 
+    this.nodeEditor = document.createElement('div');
+    this.nodeEditor.classList.add('h5p-python-codeEditor');
+    this.content.appendChild(this.nodeEditor);
+
     let instructionHandle = document.createElement('div');
     instructionHandle.classList.add('h5p-python-instructions-handle');
-    this.content.appendChild(instructionHandle);
+    this.nodeEditor.appendChild(instructionHandle);
 
     instructionHandle.addEventListener('click', () => {
       if (!this.instructions.classList.contains('hidden')) {
@@ -321,9 +325,7 @@ export default class PythonContent {
       }
     });
 
-    this.nodeEditor = document.createElement('div');
-    this.nodeEditor.classList.add('h5p-python-editor');
-    this.content.appendChild(this.nodeEditor);
+
 
     this.editor = CodeMirror(this.nodeEditor, {
       value: CodeMirror.H5P.decode(this.params.startingCode || ''),
@@ -376,7 +378,7 @@ export default class PythonContent {
 
     let outputHandle = document.createElement('div');
     outputHandle.classList.add('h5p-python-output-handle');
-    this.content.appendChild(outputHandle);
+    this.nodeEditor.appendChild(outputHandle);
 
     outputHandle.addEventListener('click', () => {
       if (!this.nodeOutput.classList.contains('hidden')) {
