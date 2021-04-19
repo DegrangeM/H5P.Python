@@ -153,6 +153,7 @@ export default class PythonContent {
   checkAnswer() {
 
     this.stop();
+    this.shouldStop = false;
     this.python.hideButton('run');
 
     this.python.hideButton('check-answer');
@@ -167,6 +168,7 @@ export default class PythonContent {
 
     let userOutput = '';
     let solOutput = '';
+    let runError = false;
 
     Sk.H5P.run(this.editor.getValue(), {
       output: x => {
@@ -178,8 +180,8 @@ export default class PythonContent {
       onSuccess: () => {
 
       },
-      onError: () => {
-
+      onError: (error) => {
+        runError = error;
       },
       onFinally: () => {
 
@@ -204,31 +206,39 @@ export default class PythonContent {
         },
         shouldStop: () => this.shouldStop // todo
       });
-    }).then(() => {
-      if (userOutput === solOutput) {
+    }).finally(() => {
+      if (!runError && userOutput === solOutput) {
         this.output.setValue(userOutput);
+
+        this.python.setFeedback('Success', 1, 1, 'scorebarlabel', undefined, { showAsPopup: true });
 
         this.python.answerGiven = true;
         this.python.score = 1;
         this.python.passed = true;
       } else {
-        // todo : localize
-
         this.output.setValue('');
         let outputText = '';
-        outputText += 'Output Missmatch\n';
-        outputText += '----------------\n';
-        outputText += 'Expected output :\n';
-        outputText += '----------------\n';
-        outputText += solOutput;
-        outputText += '----------------\n';
-        outputText += 'Current output :\n';
-        outputText += '----------------\n';
-        outputText += userOutput;
+        if (!runError) {
+          // todo : localize
+          outputText += 'Output Missmatch\n';
+          outputText += '----------------\n';
+          outputText += 'Expected output :\n';
+          outputText += '----------------\n';
+          outputText += solOutput;
+          outputText += '----------------\n';
+          outputText += 'Current output :\n';
+          outputText += '----------------\n';
+          outputText += userOutput;
+        }
+        else {
+          outputText += 'Error while execution\n';
+          outputText += '----------------\n';
+          outputText += runError.toString();
+        }
 
         CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
 
-        this.python.setFeedback('Output Missmatch', 2, 5, 'scorebarlabel', '<pre>' + outputText + '</pre>', { showAsPopup: true }, 'explanationbuttonlabel');
+        this.python.setFeedback('Output Missmatch', 0, 1, 'scorebarlabel', '<pre>' + outputText + '</pre>', { showAsPopup: true }/*, 'explanationbuttonlabel'*/);
 
         this.python.answerGiven = true;
         this.python.score = 0;
