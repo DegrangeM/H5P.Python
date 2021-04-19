@@ -298,21 +298,6 @@ export default class PythonContent {
 
       this.content.appendChild(this.instructions);
 
-      let instructionHandle = document.createElement('div');
-      instructionHandle.classList.add('h5p-python-instructions-handle');
-      this.content.appendChild(instructionHandle);
-
-      instructionHandle.addEventListener('click', () => {
-        if (!this.instructions.classList.contains('hidden')) {
-          this.instructions.classList.add('hidden');
-          instructionHandle.classList.add('hidden');
-        }
-        else {
-          this.instructions.classList.remove('hidden');
-          instructionHandle.classList.remove('hidden');
-        }
-      });
-
     }
   }
 
@@ -321,11 +306,26 @@ export default class PythonContent {
    */
   createEditor() {
 
-    let nodeEditor = document.createElement('div');
-    nodeEditor.classList.add('h5p-python-editor');
-    this.content.appendChild(nodeEditor);
+    let instructionHandle = document.createElement('div');
+    instructionHandle.classList.add('h5p-python-instructions-handle');
+    this.content.appendChild(instructionHandle);
 
-    this.editor = CodeMirror(nodeEditor, {
+    instructionHandle.addEventListener('click', () => {
+      if (!this.instructions.classList.contains('hidden')) {
+        this.instructions.classList.add('hidden');
+        instructionHandle.classList.add('hidden');
+      }
+      else {
+        this.instructions.classList.remove('hidden');
+        instructionHandle.classList.remove('hidden');
+      }
+    });
+
+    this.nodeEditor = document.createElement('div');
+    this.nodeEditor.classList.add('h5p-python-editor');
+    this.content.appendChild(this.nodeEditor);
+
+    this.editor = CodeMirror(this.nodeEditor, {
       value: CodeMirror.H5P.decode(this.params.startingCode || ''),
       keyMap: 'sublime',
       tabSize: this.params.editorOptions.tabSize,
@@ -374,6 +374,22 @@ export default class PythonContent {
 
     CodeMirror.H5P.setLanguage(this.editor, 'python');
 
+    let outputHandle = document.createElement('div');
+    outputHandle.classList.add('h5p-python-output-handle');
+    this.content.appendChild(outputHandle);
+
+    outputHandle.addEventListener('click', () => {
+      if (!this.nodeOutput.classList.contains('hidden')) {
+        this.nodeOutput.classList.add('hidden');
+        outputHandle.classList.add('hidden');
+      }
+      else {
+        this.nodeOutput.classList.remove('hidden');
+        outputHandle.classList.remove('hidden');
+      }
+    });
+
+
   }
 
   /**
@@ -382,17 +398,13 @@ export default class PythonContent {
    */
   createOutput() {
 
-    let outputHandle = document.createElement('div');
-    outputHandle.classList.add('h5p-python-output-handle');
-    this.content.appendChild(outputHandle);
-
-    let nodeOutput = document.createElement('div');
-    nodeOutput.classList.add('h5p-python-output');
-    this.content.appendChild(nodeOutput);
+    this.nodeOutput = document.createElement('div');
+    this.nodeOutput.classList.add('h5p-python-output');
+    this.content.appendChild(this.nodeOutput);
 
     CodeMirror.H5P.loadTheme('nord');
 
-    this.output = CodeMirror(nodeOutput, {
+    this.output = CodeMirror(this.nodeOutput, {
       value: '',
       theme: 'nord',
       readOnly: true,
@@ -423,17 +435,6 @@ export default class PythonContent {
     });
 
     this.output.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
-
-    outputHandle.addEventListener('click', () => {
-      if (!nodeOutput.classList.contains('hidden')) {
-        nodeOutput.classList.add('hidden');
-        outputHandle.classList.add('hidden');
-      }
-      else {
-        nodeOutput.classList.remove('hidden');
-        outputHandle.classList.remove('hidden');
-      }
-    });
 
   }
 
