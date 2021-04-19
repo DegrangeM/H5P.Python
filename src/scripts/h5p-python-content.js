@@ -43,6 +43,12 @@ export default class PythonContent {
 
     this.python.addButton('show-solution', this.params.l10n.showSolution, () => {
       // TODO: Implement something useful to do on click
+      this.showSolution();
+    }, false, {}, {});
+
+    this.python.addButton('hide-solution', this.params.l10n.hideSolution, () => {
+      // TODO: Implement something useful to do on click
+      this.hideSolution();
     }, false, {}, {});
 
 
@@ -142,7 +148,6 @@ export default class PythonContent {
           }
         }
         CodeMirror.H5P.appendLines(this.output, errorText, 'CodeMirror-python-highlighted-error-line');
-
       },
       onFinally: () => {
         this.python.showButton('run');
@@ -167,7 +172,7 @@ export default class PythonContent {
 
     this.python.hideButton('check-answer');
 
-    if (this.params.behaviour.enableSolutionsButton) {
+    if (this.params.behaviour.enableSolutionsButton && this.params.solutionCode) {
       this.python.showButton('show-solution');
     }
 
@@ -179,6 +184,8 @@ export default class PythonContent {
     let solOutput = '';
     let runError = false;
 
+    // tood solution empty ? How to check !
+
     Sk.H5P.run(this.editor.getValue(), {
       output: x => {
         userOutput += x;
@@ -186,16 +193,9 @@ export default class PythonContent {
       input: (p, resolve/*, reject*/) => {
         resolve(''); // todo
       },
-      onSuccess: () => {
-
-      },
-      onError: (error) => {
-        runError = error;
-      },
-      onFinally: () => {
-
-      },
       shouldStop: () => this.shouldStop
+    }).catch((error) => {
+      runError = error;
     }).then(() => {
       return Sk.H5P.run(CodeMirror.H5P.decode(this.params.solutionCode), {
         output: x => {
@@ -203,15 +203,6 @@ export default class PythonContent {
         },
         input: (p, resolve/*, reject*/) => {
           resolve(''); // todo
-        },
-        onSuccess: () => {
-
-        },
-        onError: () => {
-          // todo
-        },
-        onFinally: () => {
-
         },
         shouldStop: () => this.shouldStop // todo
       });
@@ -255,6 +246,21 @@ export default class PythonContent {
         this.python.passed = false;
       }
     });
+  }
+
+  showSolution() {
+    this.codeBeforeSolution = this.editor.getValue();
+    this.editor.setValue(CodeMirror.H5P.decode(this.params.solutionCode));
+    this.editor.setOption('readOnly', true);
+    this.python.hideButton('show-solution');
+    this.python.showButton('hide-solution');
+  }
+
+  hideSolution() {
+    this.editor.setValue(this.codeBeforeSolution);
+    this.editor.setOption('readOnly', false);
+    this.python.hideButton('hide-solution');
+    this.python.showButton('show-solution');
   }
 
   createInstructions() {

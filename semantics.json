@@ -218,6 +218,13 @@
         "label": "Text for \"Show solution\" button",
         "importance": "low",
         "default": "Show solution"
+      },
+      {
+        "name": "hideSolution",
+        "type": "text",
+        "label": "Text for \"Hide solution\" button",
+        "importance": "low",
+        "default": "Hide solution"
       }
     ]
   }
