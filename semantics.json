@@ -47,6 +47,7 @@
   {
     "name": "advancedGrading",
     "type": "group",
+    "expanded": true,
     "label": "Advanced options",
     "widget": "showWhen",
     "showWhen": {
