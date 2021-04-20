@@ -18,8 +18,8 @@ export default class PythonContent {
     this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
     this.setupApi();
 
-    this.executeBeforeCode = CodeMirror.H5P.decode(this.params.executeBeforeCode) + '\n';
-    this.executeAfterCode = '\n' + this.getInjectApiCode() + '\n' + CodeMirror.H5P.decode(this.params.grading.gradingCode);
+    this.executeBeforeCode = CodeMirror.H5P.decode(this.params.executeBeforeCode || '') + '\n';
+    this.executeAfterCode = '\n' + this.getInjectApiCode() + '\n' + CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
