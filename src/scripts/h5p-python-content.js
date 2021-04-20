@@ -54,10 +54,10 @@ export default class PythonContent {
     }, false, {}, {});
 
     this.python.addButton('try-again', this.params.l10n.tryAgain, () => {
-      this.showButton('run');
-      this.showButton('check-answer');
-      this.hideButton('show-solution');
-      this.hideButton('try-again');
+      this.python.showButton('run');
+      this.python.showButton('check-answer');
+      this.python.hideButton('show-solution');
+      this.python.hideButton('try-again');
 
       this.python.resetTask();
 
