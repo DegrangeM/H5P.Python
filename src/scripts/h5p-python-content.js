@@ -509,6 +509,11 @@ export default class PythonContent {
     };
   }
 
+  // To allow multiple coding :
+  // A fonction that accept an bool argument
+  // The function need to return true each time in order for it to work
+  // When it's the last check it tell it somehow ?
+
 
 
   loadApi() {
