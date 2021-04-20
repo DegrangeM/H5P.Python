@@ -61,13 +61,13 @@ export default class Python extends H5P.Question {
      * Register the DOM elements with H5P.Question
      */
     this.registerDomElements = () => {
-      const content = new PythonContent(
+      this.content = new PythonContent(
         this, // Try to retrieve user name from host system,
         this.previousState.random // previous session state
       );
 
       // Register content with H5P.Question
-      this.setContent(content.getDOM());
+      this.setContent(this.content.getDOM());
 
       window.toto = this;
 
@@ -86,15 +86,7 @@ export default class Python extends H5P.Question {
     this.addButtons = () => {
 
       // Retry button
-      this.addButton('try-again', this.params.l10n.tryAgain, () => {
-        this.showButton('check-answer');
-        this.hideButton('show-solution');
-        this.hideButton('try-again');
 
-        this.resetTask();
-
-        this.trigger('resize');
-      }, false, {}, {});
     };
 
     /**
