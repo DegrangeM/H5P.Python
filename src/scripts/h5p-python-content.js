@@ -18,7 +18,7 @@ export default class PythonContent {
     this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
     this.setupApi();
 
-    this.executeBeforeCode = this.getInjectedApi() + '\n' + CodeMirror.H5P.decode(this.params.advancedGrading.executeBeforeCode) + '\n';
+    this.executeBeforeCode = this.getInjectedApi() + '\n' + CodeMirror.H5P.decode(this.params.advancedOptions.executeBeforeCode) + '\n';
     this.executeAfterCode = '\n' + 'h5p_api_loader_' + this.randomApiKey + '()\n' + CodeMirror.H5P.decode(this.params.advancedGrading.gradingCode);
 
     this.content = document.createElement('div');
@@ -241,10 +241,10 @@ export default class PythonContent {
         if (!runError && this.userOutput === this.solOutput) {
           // this.output.setValue(this.userOutput);
 
-          this.python.setFeedback('Success', 1, 1, 'scorebarlabel');
+          this.python.setFeedback(undefined, this.params.maxScore, this.params.maxScore);
 
           this.python.answerGiven = true;
-          this.python.score = 1;
+          this.python.score = this.params.maxScore;
           this.python.passed = true;
         }
         else {
@@ -270,7 +270,7 @@ export default class PythonContent {
 
           CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
 
-          this.python.setFeedback('Output Missmatch', 0, 1, 'scorebarlabel');
+          this.python.setFeedback(undefined, 0, this.params.maxScore);
 
           this.python.answerGiven = true;
           this.python.score = 0;
@@ -517,10 +517,24 @@ export default class PythonContent {
         if (message !== undefined) {
           message = H5P.jQuery('div').text(message).html();
         }
-        this.python.setFeedback(message, score, this.params.maxScore, 'scorebarlabel');
+        this.python.setFeedback(message, score, this.params.maxScore);
       },
       getOutput: () => {
         return Sk.ffi.remapToPy(this.userOutput);
+      },
+      output: (message, type) => {
+        message = Sk.ffi.remapToJs(message);
+        type = Sk.ffi.remapToJs(type);
+        if (typeof message !== 'string') return;
+        if (typeof type !== 'undefined' && typeof type !== 'string') return;
+        let types = {
+          'error': 'CodeMirror-python-highlighted-error-line'
+        };
+        // eslint-disable-next-line no-prototype-builtins
+        if (!types.hasOwnProperty(type)) {
+          type = undefined;
+        }
+        CodeMirror.H5P.appendLines(this.output, message);
       }
     };
     Sk.builtins['h5p_api_loader_' + this.randomApiKey] = () => {

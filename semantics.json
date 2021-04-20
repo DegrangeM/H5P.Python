@@ -63,18 +63,18 @@
         "name": "maxScore",
         "type": "number",
         "label": "Max Score",
-        "description": "TODO",
+        "description": "Maximum score the user can get",
         "default": 1,
         "min": 1,
         "step": 1
       },
       {
-        "name": "executeBeforeCode",
+        "name": "executeBeforeGradingCode",
         "type": "text",
         "optional": true,
         "widget": "codeEditor",
         "language": "python",
-        "label": "Code to execute before",
+        "label": "This code will be executed before the student code when the check button is pressed.",
         "description": "TODO"
       },
       {
@@ -84,7 +84,7 @@
         "widget": "codeEditor",
         "language": "python",
         "label": "Grading Code",
-        "description": "TODO"
+        "description": "Write there the code that will grade the student code. You can use multiple function :<br><code>h5p_setScore(x)</code> : Set user score to <code>x</code>.<br><code>h5p_getOutput()</code> : Return the outputed text.<br><code>h5p_output(text)</code> : Display <code>text</code> in the output."
       }
     ]
   },
@@ -94,6 +94,23 @@
     "default": false,
     "label": "Require the code to be runned before checking solution",
     "description": "TODO"
+  },
+  {
+    "name": "advancedOptions",
+    "type": "group",
+    "label": "Advanced options",
+    "importance": "low",
+    "fields": [
+      {
+        "name": "executeBeforeCode",
+        "type": "text",
+        "optional": true,
+        "widget": "codeEditor",
+        "language": "python",
+        "label": "Code to execute before",
+        "description": "This code will be executed before the student code. You can for example add custom functions."
+      }
+    ]
   },
   {
     "name": "editorOptions",
