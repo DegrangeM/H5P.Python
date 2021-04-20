@@ -15,9 +15,10 @@ export default class PythonContent {
     this.params = python.params;
     // this.callbacks = callbacks;
 
-    this.randomApiKey = (parseInt(Math.random()*58786559+1679616)).toString(36); // generate a string between 10000 and ZZZZZ
+    this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
 
     this.executeBeforeCode = this.getInjectedApi() + '\n' + CodeMirror.H5P.decode(this.params.advancedGrading.executeBeforeCode) + '\n';
+    this.executeAfterCode = '\n' + 'h5p_api_loader_' + this.randomApiKey + '()\n' + this.params.advancedGrading.gradingCode;
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
@@ -80,9 +81,9 @@ export default class PythonContent {
     this.output.setValue('');
 
     this.setupApi();
-    this.loadApi();
 
-    Sk.H5P.run(this.getCodeToRun(this.editor.getValue()), {
+    // todo : remove the true
+    Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
       output: x => {
         CodeMirror.H5P.appendText(this.output, x);
       },
@@ -473,12 +474,18 @@ export default class PythonContent {
    * It is possible to add code to run before / after user code.
    * This function return the code with the added code.
    * @param {string} code 
+   * @param {boolean} [grading] Set to true to inject grading code
    */
-  getCodeToRun(code) {
+  getCodeToRun(code, grading) {
     let codeToRun = code;
     if (this.params.enableAdvancedGrading && this.executeBeforeCode) {
       codeToRun = this.executeBeforeCode + codeToRun;
     }
+    
+    if (this.params.enableAdvancedGrading && grading === true) {
+      codeToRun += this.executeAfterCode;
+    }
+
     return codeToRun;
   }
 
@@ -497,13 +504,15 @@ export default class PythonContent {
 
       }
     };
+    Sk.builtins['h5p_api_loader_' + this.randomApiKey] = () => {
+      this.loadApi();
+    };
   }
 
-  loadApiLoader() {
-    Sk.builtins['h5p_api_loader_' + this.randomApiKey] = this.loadApi();
-  }
+
 
   loadApi() {
+    alert(42)
     Object.entries(this.apis).forEach(([n, v]) => {
       Sk.builtins['h5p_' + n] = v;
     });
