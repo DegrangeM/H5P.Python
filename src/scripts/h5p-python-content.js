@@ -61,7 +61,6 @@ export default class PythonContent {
     window.editor = this.editor;
     window.output = this.output;
     window.tutu = this;
-    // editor.markText({line:2, ch:0}, {line:4,ch:0}, {readOnly:true});
   }
 
   /**
