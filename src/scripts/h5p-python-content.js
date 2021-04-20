@@ -15,6 +15,8 @@ export default class PythonContent {
     this.params = python.params;
     // this.callbacks = callbacks;
 
+    this.randomApiKey = (parseInt(Math.random()*58786559+1679616)).toString(36); // generate a string between 10000 and ZZZZZ
+
     this.executeBeforeCode = this.getInjectedApi() + '\n' + CodeMirror.H5P.decode(this.params.advancedGrading.executeBeforeCode) + '\n';
 
     this.content = document.createElement('div');
@@ -76,6 +78,9 @@ export default class PythonContent {
     this.python.showButton('stop');
 
     this.output.setValue('');
+
+    this.setupApi();
+    this.loadApi();
 
     Sk.H5P.run(this.getCodeToRun(this.editor.getValue()), {
       output: x => {
@@ -484,13 +489,39 @@ export default class PythonContent {
     return api;
   }
 
+  setupApi() {
+    this.apis = {
+      setScore: (score) => {
+        console.log(score, score.v);
+        this.python.setFeedback('Success', 1, 1, 'scorebarlabel', undefined, { showAsPopup: true });
+
+      }
+    };
+  }
+
+  loadApiLoader() {
+    Sk.builtins['h5p_api_loader_' + this.randomApiKey] = this.loadApi();
+  }
+
+  loadApi() {
+    Object.entries(this.apis).forEach(([n, v]) => {
+      Sk.builtins['h5p_' + n] = v;
+    });
+  }
+
+  unloadApi() {
+    Object.entries(this.apis).forEach(([n, v]) => {
+      delete Sk.builtins['h5p_' + n];
+    });
+  }
+
   /*
     Give abiltiy to check code for multiple cases ?
-
+  
     → a function to get the ouput (as a unique string or as an array of string)
-
+  
     → a function to display a feedback message
-
+  
     → a function to set score to the user
   */
 
