@@ -492,7 +492,7 @@ export default class PythonContent {
   setupApi() {
     this.apis = {
       setScore: (score) => {
-        console.log(score, score.v);
+        console.log(Sk.ffi.remapToJs(score));
         this.python.setFeedback('Success', 1, 1, 'scorebarlabel', undefined, { showAsPopup: true });
 
       }
