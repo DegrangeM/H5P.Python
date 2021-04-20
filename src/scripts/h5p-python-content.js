@@ -53,6 +53,17 @@ export default class PythonContent {
       this.hideSolution();
     }, false, {}, {});
 
+    this.addButton('try-again', this.params.l10n.tryAgain, () => {
+      this.showButton('run');
+      this.showButton('check-answer');
+      this.hideButton('show-solution');
+      this.hideButton('try-again');
+
+      this.python.resetTask();
+
+      this.python.trigger('resize');
+    }, false, {}, {});
+
 
     // window.addEventListener('resize', () => {
     //   this.python.trigger('rezise');
@@ -226,43 +237,45 @@ export default class PythonContent {
       this.python.hideButton('stop');
       this.unloadApi();
 
-      if (!runError && this.userOutput === this.solOutput) {
-        this.output.setValue(this.userOutput);
+      if (!this.params.advancedGrading) {
+        if (!runError && this.userOutput === this.solOutput) {
+          // this.output.setValue(this.userOutput);
 
-        this.python.setFeedback('Success', 1, 1, 'scorebarlabel', undefined, { showAsPopup: true, closeText:'x' });
+          this.python.setFeedback('Success', 1, 1, 'scorebarlabel');
 
-        this.python.answerGiven = true;
-        this.python.score = 1;
-        this.python.passed = true;
-      }
-      else {
-        this.output.setValue('');
-        let outputText = '';
-        if (!runError) {
-          // todo : localize
-          outputText += 'Output Missmatch\n';
-          outputText += '----------------\n';
-          outputText += 'Expected output :\n';
-          outputText += '----------------\n';
-          outputText += this.solOutput;
-          outputText += '----------------\n';
-          outputText += 'Current output :\n';
-          outputText += '----------------\n';
-          outputText += this.userOutput;
+          this.python.answerGiven = true;
+          this.python.score = 1;
+          this.python.passed = true;
         }
         else {
-          outputText += 'Error while execution\n';
-          outputText += '----------------\n';
-          outputText += runError.toString();
+          this.output.setValue('');
+          let outputText = '';
+          if (!runError) {
+            // todo : localize
+            outputText += 'Output Missmatch\n';
+            outputText += '----------------\n';
+            outputText += 'Expected output :\n';
+            outputText += '----------------\n';
+            outputText += this.solOutput;
+            outputText += '----------------\n';
+            outputText += 'Current output :\n';
+            outputText += '----------------\n';
+            outputText += this.userOutput;
+          }
+          else {
+            outputText += 'Error while execution\n';
+            outputText += '----------------\n';
+            outputText += runError.toString();
+          }
+
+          CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
+
+          this.python.setFeedback('Output Missmatch', 0, 1, 'scorebarlabel');
+
+          this.python.answerGiven = true;
+          this.python.score = 0;
+          this.python.passed = false;
         }
-
-        CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
-
-        this.python.setFeedback('Output Missmatch', 0, 1, 'scorebarlabel', '<pre style="white-space:pre-wrap;">' + outputText + '</pre>', { showAsPopup: true, closeText:'x' }/*, 'explanationbuttonlabel'*/);
-
-        this.python.answerGiven = true;
-        this.python.score = 0;
-        this.python.passed = false;
       }
     });
   }
@@ -493,8 +506,18 @@ export default class PythonContent {
 
   setupApi() {
     this.apis = {
-      setScore: (score) => {
-        this.python.setFeedback('Success', Sk.ffi.remapToJs(score), this.params.maxScore, 'scorebarlabel', undefined, { showAsPopup: true });
+      setScore: (score, passed, message) => {
+        score = Sk.ffi.remapToJs(score);
+        passed = Sk.ffi.remapToJs(passed);
+        message = Sk.ffi.remapToJs(message);
+        if (typeof score !== 'number') return;
+        if (typeof passed !== 'undefined' && typeof passed !== 'boolean') return;
+        if (typeof message !== 'undefined' && typeof message !== 'string') return;
+        this.python.passed = typeof passed === 'boolean' ? passed : (score === this.python.maxScore);
+        if (message !== undefined) {
+          message = H5P.jQuery('div').text(message).html();
+        }
+        this.python.setFeedback(message, score, this.params.maxScore, 'scorebarlabel');
       },
       getOutput: () => {
         return Sk.ffi.remapToPy(this.userOutput);
