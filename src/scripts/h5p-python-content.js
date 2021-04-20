@@ -16,6 +16,7 @@ export default class PythonContent {
     // this.callbacks = callbacks;
 
     this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
+    this.setupApi();
 
     this.executeBeforeCode = this.getInjectedApi() + '\n' + CodeMirror.H5P.decode(this.params.advancedGrading.executeBeforeCode) + '\n';
     this.executeAfterCode = '\n' + 'h5p_api_loader_' + this.randomApiKey + '()\n' + CodeMirror.H5P.decode(this.params.advancedGrading.gradingCode);
@@ -74,8 +75,6 @@ export default class PythonContent {
     this.python.showButton('stop');
 
     this.output.setValue('');
-
-    this.setupApi();
 
     // todo : remove the true
     Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
@@ -196,15 +195,15 @@ export default class PythonContent {
       this.python.showButton('try-again');
     }
 
-    let userOutput = '';
-    let solOutput = '';
+    this.userOutput = '';
+    this.solOutput = '';
     let runError = false;
 
-    // todo solution empty ? How to check !
+    // todo solution empty ? Need to check !
 
-    Sk.H5P.run(this.getCodeToRun(this.editor.getValue()), {
+    Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
       output: x => {
-        userOutput += x;
+        this.userOutput += x;
       },
       input: (p, resolve/*, reject*/) => {
         resolve(''); // todo
@@ -225,11 +224,12 @@ export default class PythonContent {
       });
     }).finally(() => {
       this.python.hideButton('stop');
+      this.unloadApi();
 
-      if (!runError && userOutput === solOutput) {
-        this.output.setValue(userOutput);
+      if (!runError && this.userOutput === this.solOutput) {
+        this.output.setValue(this.userOutput);
 
-        this.python.setFeedback('Success', 1, 1, 'scorebarlabel', undefined, { showAsPopup: true });
+        this.python.setFeedback('Success', 1, 1, 'scorebarlabel', undefined, { showAsPopup: true, closeText:'x' });
 
         this.python.answerGiven = true;
         this.python.score = 1;
@@ -244,11 +244,11 @@ export default class PythonContent {
           outputText += '----------------\n';
           outputText += 'Expected output :\n';
           outputText += '----------------\n';
-          outputText += solOutput;
+          outputText += this.solOutput;
           outputText += '----------------\n';
           outputText += 'Current output :\n';
           outputText += '----------------\n';
-          outputText += userOutput;
+          outputText += this.userOutput;
         }
         else {
           outputText += 'Error while execution\n';
@@ -258,7 +258,7 @@ export default class PythonContent {
 
         CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
 
-        this.python.setFeedback('Output Missmatch', 0, 1, 'scorebarlabel', '<pre style="white-space:pre-wrap;">' + outputText + '</pre>', { showAsPopup: true }/*, 'explanationbuttonlabel'*/);
+        this.python.setFeedback('Output Missmatch', 0, 1, 'scorebarlabel', '<pre style="white-space:pre-wrap;">' + outputText + '</pre>', { showAsPopup: true, closeText:'x' }/*, 'explanationbuttonlabel'*/);
 
         this.python.answerGiven = true;
         this.python.score = 0;
@@ -476,7 +476,7 @@ export default class PythonContent {
     if (this.params.enableAdvancedGrading && this.executeBeforeCode) {
       codeToRun = this.executeBeforeCode + codeToRun;
     }
-    
+
     if (this.params.enableAdvancedGrading && grading === true) {
       codeToRun += this.executeAfterCode;
     }
@@ -494,9 +494,10 @@ export default class PythonContent {
   setupApi() {
     this.apis = {
       setScore: (score) => {
-        console.log(Sk.ffi.remapToJs(score));
-        this.python.setFeedback('Success', 1, 1, 'scorebarlabel', undefined, { showAsPopup: true });
-
+        this.python.setFeedback('Success', Sk.ffi.remapToJs(score), this.params.maxScore, 'scorebarlabel', undefined, { showAsPopup: true });
+      },
+      getOutput: () => {
+        return Sk.ffi.remapToPy(this.userOutput);
       }
     };
     Sk.builtins['h5p_api_loader_' + this.randomApiKey] = () => {
@@ -518,16 +519,14 @@ export default class PythonContent {
   }
 
   unloadApi() {
-    Object.entries(this.apis).forEach(([n, v]) => {
+    Object.entries(this.apis).forEach(([n]) => {
       delete Sk.builtins['h5p_' + n];
     });
   }
 
   /*
     Give abiltiy to check code for multiple cases ?
-  
-    → a function to get the ouput (as a unique string or as an array of string)
-  
+    
     → a function to display a feedback message
   
     → a function to set score to the user
