@@ -200,7 +200,7 @@ export default class PythonContent {
     let solOutput = '';
     let runError = false;
 
-    // tood solution empty ? How to check !
+    // todo solution empty ? How to check !
 
     Sk.H5P.run(this.getCodeToRun(this.editor.getValue()), {
       output: x => {
