@@ -218,6 +218,7 @@ export default class PythonContent {
   checkAnswer_compareOutputs() {
     let iCheckExecution = -1;
     let iCheckInputs;
+    let checkInputs;
     let runError = false;
 
     // todo solution empty ? Need to check !
@@ -229,6 +230,7 @@ export default class PythonContent {
     this.params.grading.inputs.map(() => {
       return () => {
         iCheckExecution++;
+        checkInputs = this.params.grading.inputs[iCheckExecution].split('\n');
         iCheckInputs = 0;
         this.userOutput = '';
         this.solOutput = '';
@@ -237,7 +239,7 @@ export default class PythonContent {
             this.userOutput += x;
           },
           input: (p, resolve) => {
-            let r = this.params.grading.inputs[iCheckExecution][iCheckInputs] || '';
+            let r = checkInputs[iCheckInputs] || '';
             iCheckInputs++;
             p.output(p.prompt);
             p.output(r);
@@ -255,7 +257,7 @@ export default class PythonContent {
               this.solOutput += x;
             },
             input: (p, resolve) => {
-              let r = this.params.grading.inputs[iCheckExecution][iCheckInputs] || '';
+              let r = checkInputs[iCheckInputs] || '';
               iCheckInputs++;
               p.output(p.prompt);
               p.output(r);
