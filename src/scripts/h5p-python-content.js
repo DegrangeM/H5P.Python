@@ -216,11 +216,8 @@ export default class PythonContent {
 
   checkAnswer_compareOutputs() {
     let iCheckExecution = -1;
-    let iCheckInputs = 0;
+    let iCheckInputs;
     let runError = false;
-
-    this.userOutput = '';
-    this.solOutput = '';
 
     // todo solution empty ? Need to check !
 
@@ -233,6 +230,9 @@ export default class PythonContent {
       this.params.grading.inputs.map(() => {
         return () => {
           iCheckExecution++;
+          iCheckInputs = 0;
+          this.userOutput = '';
+          this.solOutput = '';
           return Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
             output: x => {
               this.userOutput += x;
