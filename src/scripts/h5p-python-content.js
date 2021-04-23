@@ -226,7 +226,7 @@ export default class PythonContent {
     }).then(() => {
       return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode)), {
         output: x => {
-          solOutput += x;
+          this.solOutput += x;
         },
         input: (p, resolve/*, reject*/) => {
           resolve(''); // todo

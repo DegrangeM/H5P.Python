@@ -77,6 +77,36 @@
         ]
       },
       {
+        "name": "inputs",
+        "type": "list",
+        "label": "Executions inputs",
+        "description": "When pressing the Check button, the student code will be executed automatically. If the student code call the <code>input</code> function, an empty string will be returned. You can however set here custom values. It is even possible to run the code multiple time, each execution with differents inputs.",
+        "entity": "execution",
+        "min": 1,
+        "field": {
+          "name": "inputs",
+          "type": "list",
+          "label": "Inputs",
+          "description": "You can set here the values that will be returned by each call to the <code>input</code> function during this execution. Otherwise it will return an empty string.",
+          "entity": "input",
+          "min": 1,
+          "field": {
+            "name": "Input",
+            "type": "text",
+            "label": "Input"
+          }
+        },
+        "widget": "showWhen",
+        "showWhen": {
+          "rules": [
+            {
+              "field": "gradingMethod",
+              "equals": "compareOutputs"
+            }
+          ]
+        }
+      },
+      {
         "name": "executeBeforeGradingCode",
         "type": "text",
         "optional": true,
