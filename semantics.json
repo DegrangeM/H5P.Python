@@ -86,7 +86,7 @@
         "field": {
           "name": "inputs",
           "type": "list",
-          "label": "Inputs",
+          "label": "Execution",
           "description": "You can set here the values that will be returned by each call to the <code>input</code> function during this execution. Otherwise it will return an empty string.",
           "entity": "input",
           "min": 1,
