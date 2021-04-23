@@ -54,6 +54,7 @@ export default class PythonContent {
     }, false, {}, {});
 
     this.python.addButton('try-again', this.params.l10n.tryAgain, () => {
+      this.python.removeFeedback();
       this.python.showButton('run');
       this.python.showButton('check-answer');
       this.python.hideButton('show-solution');
