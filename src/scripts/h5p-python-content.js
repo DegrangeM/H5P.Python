@@ -215,7 +215,7 @@ export default class PythonContent {
   }
 
   checkAnswer_compareOutputs() {
-    let iCheckExecution = 0;
+    let iCheckExecution = -1;
     let iCheckInputs = 0;
     let runError = false;
 
@@ -224,95 +224,95 @@ export default class PythonContent {
 
     // todo solution empty ? Need to check !
 
-    /*new Promise((resolve, reject) => {
+    new Promise((resolve, reject) => {
 
       // https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html
 
       let result = Promise.resolve();
 
-      this.params.grading.inputs.maps(() => {
+      this.params.grading.inputs.map(() => {
         return () => {
+          iCheckExecution++;
+          return Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
+            output: x => {
+              this.userOutput += x;
+            },
+            input: (p, resolve) => {
+              let r = this.params.grading.inputs[iCheckExecution][iCheckInputs] || '';
+              iCheckInputs++;
+              p.output(p.prompt);
+              p.output(r);
+              p.output('\n');
+              resolve(r);
+            },
+            chain: true,
+            shouldStop: () => this.shouldStop
+          }).catch((error) => {
+            runError = error;
+          }).then(() => {
+            iCheckInputs = 0;
+            return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode)), {
+              output: x => {
+                this.solOutput += x;
+              },
+              input: (p, resolve) => {
+                let r = this.params.grading.inputs[iCheckExecution][iCheckInputs] || '';
+                iCheckInputs++;
+                p.output(p.prompt);
+                p.output(r);
+                p.output('\n');
+                resolve(r);
+              },
+              shouldStop: () => this.shouldStop
+            });
+          }).finally(() => {
+            this.python.hideButton('stop');
+            this.unloadApi();
 
+            if (!runError && this.userOutput === this.solOutput) {
+              resolve();
+            }
+            else {
+              this.output.setValue('');
+              let outputText = '';
+              if (!runError) {
+                // todo : localize
+                outputText += 'Output Missmatch\n';
+                outputText += '----------------\n';
+                outputText += 'Expected output :\n';
+                outputText += '----------------\n';
+                outputText += this.solOutput;
+                outputText += '----------------\n';
+                outputText += 'Current output :\n';
+                outputText += '----------------\n';
+                outputText += this.userOutput;
+              }
+              else {
+                outputText += 'Error while execution\n';
+                outputText += '----------------\n';
+                outputText += runError.toString();
+              }
+
+              CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
+
+              reject();
+            }
+          });
         };
       }).forEach((promiseFactory) => {
         result = result.then(promiseFactory);
       });
 
-      // return result;
-      */
-      Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
-        output: x => {
-          this.userOutput += x;
-        },
-        input: (p, resolve) => {
-          let r = this.params.grading.inputs[iCheckExecution][iCheckInputs] || '';
-          iCheckInputs++;
-          p.output(p.prompt);
-          p.output(r);
-          p.output('\n');
-          resolve(r);
-        },
-        chain: true,
-        shouldStop: () => this.shouldStop
-      }).catch((error) => {
-        runError = error;
-      }).then(() => {
-        iCheckInputs = 0;
-        return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode)), {
-          output: x => {
-            this.solOutput += x;
-          },
-          input: (p, resolve) => {
-            let r = this.params.grading.inputs[iCheckExecution][iCheckInputs] || '';
-            iCheckInputs++;
-            p.output(p.prompt);
-            p.output(r);
-            p.output('\n');
-            resolve(r);
-          },
-          shouldStop: () => this.shouldStop
-        });
-      }).finally(() => {
-        this.python.hideButton('stop');
-        this.unloadApi();
+      return result;
 
-        if (!runError && this.userOutput === this.solOutput) {
-          resolve();
-        }
-        else {
-          this.output.setValue('');
-          let outputText = '';
-          if (!runError) {
-            // todo : localize
-            outputText += 'Output Missmatch\n';
-            outputText += '----------------\n';
-            outputText += 'Expected output :\n';
-            outputText += '----------------\n';
-            outputText += this.solOutput;
-            outputText += '----------------\n';
-            outputText += 'Current output :\n';
-            outputText += '----------------\n';
-            outputText += this.userOutput;
-          }
-          else {
-            outputText += 'Error while execution\n';
-            outputText += '----------------\n';
-            outputText += runError.toString();
-          }
-
-          CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
-
-          reject();
-        }
-      });
     }).then(() => {
-      this.python.setFeedback(undefined, this.params.maxScore, this.params.maxScore);
+      this.python.setFeedback(undefined, this.params.grading.maxScore, this.params.grading.maxScore);
 
       this.python.answerGiven = true;
       this.python.score = this.params.maxScore;
       this.python.passed = true;
     }).catch(() => {
-      this.python.setFeedback(undefined, 0, this.params.maxScore);
+      this.python.setFeedback(undefined, 0, this.params.grading.maxScore);
 
       this.python.answerGiven = true;
       this.python.score = 0;
