@@ -267,14 +267,14 @@ export default class PythonContent {
             shouldStop: () => this.shouldStop
           });
         }).finally(() => {
-          this.python.hideButton('stop');
           this.unloadApi();
+
+          this.output.setValue('');
 
           if (!runError && this.userOutput === this.solOutput) {
             return Promise.resolve();
           }
           else {
-            this.output.setValue('');
             let outputText = '';
             if (!runError) {
               // todo : localize
@@ -316,6 +316,8 @@ export default class PythonContent {
       this.python.answerGiven = true;
       this.python.score = 0;
       this.python.passed = false;
+    }).finally(() => {
+      this.python.hideButton('stop');
     });
 
   }
