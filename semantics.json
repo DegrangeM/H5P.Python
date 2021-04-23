@@ -93,7 +93,8 @@
           "field": {
             "name": "Input",
             "type": "text",
-            "label": "Input"
+            "label": "Input",
+            "optional": true
           }
         },
         "widget": "showWhen",

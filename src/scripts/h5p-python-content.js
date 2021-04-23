@@ -206,46 +206,78 @@ export default class PythonContent {
       this.python.showButton('try-again');
     }
 
+
+    // let runError = false;
+
+    if (this.params.grading.gradingMethod === 'compareOutputs') {
+      this.checkAnswer_compareOutputs();
+    }
+  }
+
+  checkAnswer_compareOutputs() {
+    let iCheckExecution = 0;
+    let iCheckInputs = 0;
+    let runError = false;
+
     this.userOutput = '';
     this.solOutput = '';
-    let runError = false;
 
     // todo solution empty ? Need to check !
 
-    Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
-      output: x => {
-        this.userOutput += x;
-      },
-      input: (p, resolve/*, reject*/) => {
-        resolve(''); // todo
-      },
-      chain: true,
-      shouldStop: () => this.shouldStop
-    }).catch((error) => {
-      runError = error;
-    }).then(() => {
-      return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode)), {
-        output: x => {
-          this.solOutput += x;
-        },
-        input: (p, resolve/*, reject*/) => {
-          resolve(''); // todo
-        },
-        shouldStop: () => this.shouldStop // todo
+    /*new Promise((resolve, reject) => {
+
+      // https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html
+
+      let result = Promise.resolve();
+
+      this.params.grading.inputs.maps(() => {
+        return () => {
+
+        };
+      }).forEach((promiseFactory) => {
+        result = result.then(promiseFactory);
       });
-    }).finally(() => {
-      this.python.hideButton('stop');
-      this.unloadApi();
 
-      if (!this.params.advancedGrading) {
+      // return result;
+      */
+      Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
+        output: x => {
+          this.userOutput += x;
+        },
+        input: (p, resolve) => {
+          let r = this.params.grading.inputs[iCheckExecution][iCheckInputs] || '';
+          iCheckInputs++;
+          p.output(p.prompt);
+          p.output(r);
+          p.output('\n');
+          resolve(r);
+        },
+        chain: true,
+        shouldStop: () => this.shouldStop
+      }).catch((error) => {
+        runError = error;
+      }).then(() => {
+        iCheckInputs = 0;
+        return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode)), {
+          output: x => {
+            this.solOutput += x;
+          },
+          input: (p, resolve) => {
+            let r = this.params.grading.inputs[iCheckExecution][iCheckInputs] || '';
+            iCheckInputs++;
+            p.output(p.prompt);
+            p.output(r);
+            p.output('\n');
+            resolve(r);
+          },
+          shouldStop: () => this.shouldStop
+        });
+      }).finally(() => {
+        this.python.hideButton('stop');
+        this.unloadApi();
+
         if (!runError && this.userOutput === this.solOutput) {
-          // this.output.setValue(this.userOutput);
-
-          this.python.setFeedback(undefined, this.params.maxScore, this.params.maxScore);
-
-          this.python.answerGiven = true;
-          this.python.score = this.params.maxScore;
-          this.python.passed = true;
+          resolve();
         }
         else {
           this.output.setValue('');
@@ -270,13 +302,21 @@ export default class PythonContent {
 
           CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
 
-          this.python.setFeedback(undefined, 0, this.params.maxScore);
-
-          this.python.answerGiven = true;
-          this.python.score = 0;
-          this.python.passed = false;
+          reject();
         }
-      }
+      });
+    }).then(() => {
+      this.python.setFeedback(undefined, this.params.maxScore, this.params.maxScore);
+
+      this.python.answerGiven = true;
+      this.python.score = this.params.maxScore;
+      this.python.passed = true;
+    }).catch(() => {
+      this.python.setFeedback(undefined, 0, this.params.maxScore);
+
+      this.python.answerGiven = true;
+      this.python.score = 0;
+      this.python.passed = false;
     });
   }
 
