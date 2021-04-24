@@ -518,6 +518,10 @@ export default class PythonContent {
       });
     }
 
+    this.editor.on('changes', () => {
+      this.python.trigger('resize');
+    });
+
     this.editor.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
 
     CodeMirror.H5P.setLanguage(this.editor, 'python');
@@ -582,6 +586,10 @@ export default class PythonContent {
 
     this.output.on('blur', () => {
       this.output.setOption('styleActiveLine', false);
+    });
+
+    this.output.on('changes', () => {
+      this.python.trigger('resize');
     });
 
     this.output.refresh(); // required to avoid bug where line number overlap code that might happen in some condition
