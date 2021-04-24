@@ -740,6 +740,13 @@ export default class PythonContent {
       },
       getData: (name) => {
         return Sk.ffi.remapToPy(this.apiData[name]);
+      },
+      trigger: (name, data) {
+        name = Sk.ffi.remapToJs(name);
+        data = Sk.ffi.remapToJs(data);
+        if (typeof name !== 'string') return;
+        name = name !== undefined ? 'H5P.Python.' + name : 'H5P.Python';
+        H5P.externalDispatcher.trigger(name, data);
       }
     };
     Sk.builtins['h5p_api_loader_' + this.randomApiKey] = () => {
