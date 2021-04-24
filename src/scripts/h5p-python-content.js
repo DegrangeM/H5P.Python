@@ -59,13 +59,12 @@ export default class PythonContent {
       this.python.hideButton('show-solution');
       this.python.hideButton('try-again');
 
-      this.python.resetTask();
-
       this.python.trigger('resize');
     }, false, {}, {});
 
     this.python.addButton('reset', this.params.l10n.reset, () => {
       this.python.resetTask();
+      this.python.trigger('resize');
     }, true, {}, {
       confirmationDialog: {
         enable: true,
