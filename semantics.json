@@ -115,7 +115,7 @@
         "optional": true,
         "language": "python",
         "label": "Grading Code",
-        "description": "Write there the code that will grade the student code. You can use multiple function :<br><code>h5p_setScore(x)</code> : Set user score to <code>x</code>.<br><code>h5p_getOutput()</code> : Return the outputed text.<br><code>h5p_output(text)</code> : Display <code>text</code> in the output.",
+        "description": "Write there the code that will grade the student code. You can use multiple function :<br><code>h5p_setScore(x)</code> : Set user score to <code>x</code>.<br><code>h5p_getOutput()</code> : Return the outputed text.<br><code>h5p_output(text)</code> : Display <code>text</code> in the output.<br>The <code>h5p_execution</code> variable is also avaiable if you need to know the execution number.",
         "widget": "showWhen",
         "showWhen": {
           "rules": [
