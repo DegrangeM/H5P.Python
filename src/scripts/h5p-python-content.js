@@ -770,7 +770,7 @@ export default class PythonContent {
 
 
   injectApi(code) {
-    let injectedCode = 'def h5p_loader() :\n'
+    let injectedCode = 'def h5p_loader() :\n';
 
     let indentedCode = '';
     Object.entries(this.apis).forEach((n) => {
@@ -780,8 +780,10 @@ export default class PythonContent {
     indentedCode = indentedCode.split('\n').map(x => '\t' + x).join('\n');
 
     injectedCode += indentedCode + '\n';
-    injectedCode += 'h5p_loader()\n'
-    injectedCode += 'del h5p_loader\n'
+    injectedCode += 'h5p_loader()\n';
+    injectedCode += 'del h5p_loader\n';
+    
+    return injectedCode;
   }
 
   /*
