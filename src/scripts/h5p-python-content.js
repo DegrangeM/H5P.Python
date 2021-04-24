@@ -655,7 +655,7 @@ export default class PythonContent {
 
     if (this.params.grading.gradingMethod === 'programmedGrading' && this.params.grading.executeBeforeGradingCode && grading === true) {
       let beforeGradingCode = this.getInjectApiCode() + '\n';
-      beforeGradingCode += CodeMirror.H5P.decode( this.params.grading.executeBeforeGradingCode) + '\n';
+      beforeGradingCode += CodeMirror.H5P.decode(this.params.grading.executeBeforeGradingCode) + '\n';
       beforeGradingCode += 'h5p_api_unloader()\n';
       beforeCode = beforeGradingCode + beforeCode;
     }
@@ -749,12 +749,17 @@ export default class PythonContent {
         H5P.externalDispatcher.trigger(name, data);
       }
     };
+    Object.entries(this.apis).forEach(([n, v]) => {
+      Sk.builtins['h5p_' + n + '_' + this.randomApiKey] = v;
+    });
+    /*
     Sk.builtins['h5p_api_loader_' + this.randomApiKey] = () => {
       this.loadApi();
     };
     Sk.builtins['h5p_api_unloader'] = () => {
       this.unloadApi();
     };
+    */
   }
 
   // To allow multiple coding :
@@ -764,16 +769,19 @@ export default class PythonContent {
 
 
 
-  loadApi() {
-    Object.entries(this.apis).forEach(([n, v]) => {
-      Sk.builtins['h5p_' + n] = v;
-    });
-  }
+  injectApi(code) {
+    let injectedCode = 'def h5p_loader() :\n'
 
-  unloadApi() {
-    Object.entries(this.apis).forEach(([n]) => {
-      delete Sk.builtins['h5p_' + n];
+    let indentedCode = '';
+    Object.entries(this.apis).forEach((n) => {
+      indentedCode += 'h5p_' + n + ' = h5p_' + n + '_' + this.randomApiKey + '\n';
     });
+    indentedCode += code;
+    indentedCode = indentedCode.split('\n').map(x => '\t' + x).join('\n');
+
+    injectedCode += indentedCode + '\n';
+    injectedCode += 'h5p_loader()\n'
+    injectedCode += 'del h5p_loader\n'
   }
 
   /*
