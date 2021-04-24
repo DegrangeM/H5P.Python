@@ -233,6 +233,8 @@ export default class PythonContent {
     let checkInputs;
     let runError = false;
 
+    this.output.setValue('');
+
     // https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html
 
     let result = Promise.resolve();
@@ -278,9 +280,7 @@ export default class PythonContent {
           });
         }).finally(() => {
           this.unloadApi();
-
-          this.output.setValue('');
-
+          
           if (!runError && this.userOutput === this.solOutput) {
             return Promise.resolve();
           }
