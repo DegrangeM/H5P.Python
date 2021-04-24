@@ -64,7 +64,6 @@ export default class PythonContent {
 
     this.python.addButton('reset', this.params.l10n.reset, () => {
       this.python.resetTask();
-      this.python.trigger('resize');
     }, true, {}, {
       confirmationDialog: {
         enable: true,

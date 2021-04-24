@@ -130,8 +130,19 @@ export default class Python extends H5P.Question {
      * @see contract at {@link https://h5p.org/documentation/developers/contracts#guides-header-5}
      */
     this.resetTask = () => {
+      this.removeFeedback();
+      this.content.stop();
+      this.showButton('run');
+      this.showButton('stop');
+      this.showButton('check-answer');
+      this.hideButton('show-solution');
+      this.hideButton('try-again');
       this.content.editor.setValue(CodeMirror.H5P.decode(this.params.startingCode || ''));
       this.content.output.setValue('');
+      setTimeout(() => { // reset output after async
+        this.content.output.setValue('');
+      }, 0);
+      this.trigger('resize');
       // TODO : setup highlight, readonly, etc.
     };
 
@@ -185,8 +196,8 @@ export default class Python extends H5P.Question {
      */
     this.getxAPIDefinition = () => {
       const definition = {};
-      definition.name = {'en-US': this.getTitle()};
-      definition.description = {'en-US': this.getDescription()};
+      definition.name = { 'en-US': this.getTitle() };
+      definition.description = { 'en-US': this.getDescription() };
 
       // TODO: Set IRI as required for your verb, cmp. http://xapi.vocab.pub/verbs/#
       definition.type = 'http://adlnet.gov/expapi/activities/cmi.interaction';
