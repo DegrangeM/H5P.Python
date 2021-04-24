@@ -152,7 +152,7 @@
         "language": "python",
         "label": "Code to execute after",
         "description": "This code will be executed after the student code."
-      },
+      }
     ]
   },
   {
