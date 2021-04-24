@@ -12,6 +12,10 @@
   content: '\f04d'
 }
 
+.h5p-python .h5p-question-reset:before {
+  content: '\f021'
+}
+
 .h5p-python .h5p-question-hide-solution:before {
   content: '\f070'
 }

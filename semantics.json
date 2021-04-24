@@ -259,6 +259,13 @@
         "default": "Stop"
       },
       {
+        "name": "reset",
+        "type": "text",
+        "label": "Text for \"Reset\" button",
+        "importance": "low",
+        "default": "Reset"
+      },
+      {
         "name": "checkAnswer",
         "type": "text",
         "label": "Text for \"Check\" button",

@@ -41,6 +41,9 @@ export default class PythonContent {
       this.stop();
     }, false);
 
+
+
+
     this.python.addButton('check-answer', this.params.l10n.checkAnswer, () => {
       this.checkAnswer();
     }, !this.params.requireRunBeforeCheck, {}, {});
@@ -64,6 +67,10 @@ export default class PythonContent {
 
       this.python.trigger('resize');
     }, false, {}, {});
+
+    this.python.addButton('reset', this.params.l10n.reset, () => {
+      this.python.resetTask();
+    }, true);
 
 
     // window.addEventListener('resize', () => {
