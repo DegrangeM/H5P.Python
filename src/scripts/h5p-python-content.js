@@ -725,8 +725,10 @@ export default class PythonContent {
         // eslint-disable-next-line no-prototype-builtins
         if (!types.hasOwnProperty(type)) {
           type = undefined;
+        } else {
+          type = types[type];
         }
-        CodeMirror.H5P.appendLines(this.output, message);
+        CodeMirror.H5P.appendLines(this.output, message, type);
       },
       setData: (name, value) => {
         let data = Sk.ffi.remapToJs(value);
