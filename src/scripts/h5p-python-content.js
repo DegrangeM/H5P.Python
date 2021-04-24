@@ -667,12 +667,12 @@ export default class PythonContent {
    */
   getCodeToRun(code, grading) {
     let codeToRun = code;
-    if (this.params.enableAdvancedGrading && this.executeBeforeCode) {
+    if (this.executeBeforeCode) {
       codeToRun = this.executeBeforeCode + codeToRun;
     }
 
-    if (this.params.enableAdvancedGrading && grading === true) {
-      codeToRun += this.executeAfterCode;
+    if (this.params.grading.gradingMethod === 'gradingCode' && grading === true) {
+      codeToRun = this.params.grading.executeBeforeGradingCode + '\n' + codeToRun + this.executeAfterCode;
     }
 
     return codeToRun;
