@@ -15,11 +15,7 @@ export default class PythonContent {
     this.params = python.params;
     // this.callbacks = callbacks;
 
-    this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
     this.setupApi();
-
-    this.executeBeforeCode = CodeMirror.H5P.decode(this.params.executeBeforeCode || '') + '\n';
-    this.executeAfterCode = '\n' + this.getInjectApiCode() + '\n' + CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
 
     this.content = document.createElement('div');
     this.content.classList.add('h5p-python-content');
@@ -665,17 +661,32 @@ export default class PythonContent {
    * @param {string} code 
    * @param {boolean} [grading] Set to true to inject grading code
    */
+
   getCodeToRun(code, grading) {
-    let codeToRun = code;
+    return this.getBeforeCode(grading) + code + this.getAfterCode(grading);
+  }
+
+  getBeforeCode(grading) {
+    let beforeCode = '';
     if (this.executeBeforeCode) {
-      codeToRun = this.executeBeforeCode + codeToRun;
+      beforeCode = CodeMirror.H5P.decode(this.params.executeBeforeCode || '') + '\n';
     }
 
     if (this.params.grading.gradingMethod === 'gradingCode' && grading === true) {
-      codeToRun = this.params.grading.executeBeforeGradingCode + '\n' + codeToRun + this.executeAfterCode;
+      beforeCode = this.params.grading.executeBeforeGradingCode + '\n' + beforeCode; // + this.executeAfterCode;
     }
 
-    return codeToRun;
+    return beforeCode;
+  }
+
+  getAfterCode(grading) {
+    let afterCode = '';
+
+    if (this.params.grading.gradingMethod === 'gradingCode' && grading === true) {
+      afterCode = '\n' + this.getInjectApiCode() + '\n' + CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
+    }
+
+    return afterCode;
   }
 
   getInjectApiCode() {
@@ -683,6 +694,7 @@ export default class PythonContent {
   }
 
   setupApi() {
+    this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
     this.apis = {
       setScore: (score, passed, message) => {
         score = Sk.ffi.remapToJs(score);
