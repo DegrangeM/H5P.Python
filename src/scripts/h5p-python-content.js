@@ -98,7 +98,7 @@ export default class PythonContent {
     this.output.setValue('');
 
     // todo : remove the true
-    Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
+    Sk.H5P.run(this.getCodeToRun(this.editor.getValue()), {
       output: x => {
         CodeMirror.H5P.appendText(this.output, x);
       },
@@ -166,9 +166,9 @@ export default class PythonContent {
           errorText = 'Execution interrupted';
         }
         else {
-          if (error.traceback && this.params.enableAdvancedGrading) {
+          if (error.traceback) {
             // if code was added before, substract the length of added code to preserve line number error.
-            let addedCodeLength = this.executeBeforeCode.split('\n').length - 1; // +1 because of \n
+            let addedCodeLength = this.getBeforeCode().split('\n').length - 1; // +1 because of \n
             error.traceback.forEach(v => {
               if (v.filename === '<stdin>.py') {
                 v.lineno -= addedCodeLength;
@@ -262,7 +262,7 @@ export default class PythonContent {
           runError = error;
         }).then(() => {
           iCheckInputs = 0;
-          return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode)), {
+          return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode), true), {
             output: x => {
               this.solOutput += x;
             },
@@ -299,6 +299,15 @@ export default class PythonContent {
               outputText += this.userOutput;
             }
             else {
+              if (runError.traceback) {
+                // if code was added before, substract the length of added code to preserve line number error.
+                let addedCodeLength = this.getBeforeCode(true).split('\n').length - 1; // +1 because of \n
+                runError.traceback.forEach(v => {
+                  if (v.filename === '<stdin>.py') {
+                    v.lineno -= addedCodeLength;
+                  }
+                });
+              }
               outputText += 'Error while execution\n';
               outputText += '----------------\n';
               outputText += runError.toString();
@@ -369,7 +378,7 @@ export default class PythonContent {
           runError = error;
         }).then(() => {
           iCheckInputs = 0;
-          return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode)), {
+          return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode), true), {
             output: x => {
               this.solOutput += x;
             },
@@ -406,6 +415,15 @@ export default class PythonContent {
               outputText += this.userOutput;
             }
             else {
+              if (runError.traceback) {
+                // if code was added before, substract the length of added code to preserve line number error.
+                let addedCodeLength = this.getBeforeCode(true).split('\n').length - 1; // +1 because of \n
+                runError.traceback.forEach(v => {
+                  if (v.filename === '<stdin>.py') {
+                    v.lineno -= addedCodeLength;
+                  }
+                });
+              }
               outputText += 'Error while execution\n';
               outputText += '----------------\n';
               outputText += runError.toString();
