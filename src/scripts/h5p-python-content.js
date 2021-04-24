@@ -381,37 +381,25 @@ export default class PythonContent {
         }).finally(() => {
           this.unloadApi();
 
-          if (!runError && this.userOutput === this.solOutput) {
+          if (!runError) {
             return Promise.resolve();
           }
           else {
             let outputText = '';
-            if (!runError) {
-              // todo : localize
-              outputText += 'Output Missmatch\n';
-              outputText += '----------------\n';
-              outputText += 'Expected output :\n';
-              outputText += '----------------\n';
-              outputText += this.solOutput;
-              outputText += '----------------\n';
-              outputText += 'Current output :\n';
-              outputText += '----------------\n';
-              outputText += this.userOutput;
+
+            if (runError.traceback) {
+              // if code was added before, substract the length of added code to preserve line number error.
+              let addedCodeLength = this.getBeforeCode(true).split('\n').length - 1; // +1 because of \n
+              runError.traceback.forEach(v => {
+                if (v.filename === '<stdin>.py') {
+                  v.lineno -= addedCodeLength;
+                }
+              });
             }
-            else {
-              if (runError.traceback) {
-                // if code was added before, substract the length of added code to preserve line number error.
-                let addedCodeLength = this.getBeforeCode(true).split('\n').length - 1; // +1 because of \n
-                runError.traceback.forEach(v => {
-                  if (v.filename === '<stdin>.py') {
-                    v.lineno -= addedCodeLength;
-                  }
-                });
-              }
-              outputText += 'Error while execution\n';
-              outputText += '----------------\n';
-              outputText += runError.toString();
-            }
+            outputText += 'Error while execution\n';
+            outputText += '----------------\n';
+            outputText += runError.toString();
+
 
             CodeMirror.H5P.appendLines(this.output, outputText, 'CodeMirror-python-highlighted-error-line');
 
