@@ -64,7 +64,7 @@
         "type": "select",
         "label": "Grading method",
         "description": "How to grade the user code. The default Compare outputs code will give the user the max score if the output match the solution output. In programmed grading, you will have to write code to grade the user.",
-        "default": "compareOutput",
+        "default": "compareOutputs",
         "options": [
           {
             "value": "compareOutputs",
