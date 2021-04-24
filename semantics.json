@@ -142,7 +142,7 @@
         "widget": "codeEditor",
         "language": "python",
         "label": "Code to execute before",
-        "description": "This code will be executed before the student code. You can for example add custom functions."
+        "description": "This code will be executed before the student code. You can for example add custom functions. Some specials function are avaible (see Grading Code)."
       },
       {
         "name": "bug",

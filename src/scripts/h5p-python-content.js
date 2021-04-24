@@ -27,55 +27,10 @@ export default class PythonContent {
 
     this.createOutput();
 
+    this.addButtons();
+
     this.python.trigger('resize');
 
-    this.python.addButton('run', this.params.l10n.run, () => {
-      this.run();
-    });
-
-    this.python.addButton('stop', this.params.l10n.stop, () => {
-      this.stop();
-    }, false);
-
-
-
-
-    this.python.addButton('check-answer', this.params.l10n.checkAnswer, () => {
-      this.checkAnswer();
-    }, !this.params.requireRunBeforeCheck, {}, {});
-
-    this.python.addButton('show-solution', this.params.l10n.showSolution, () => {
-      this.showSolution();
-    }, false, {}, {});
-
-    this.python.addButton('hide-solution', this.params.l10n.hideSolution, () => {
-      this.hideSolution();
-    }, false, {}, {});
-
-    this.python.addButton('try-again', this.params.l10n.tryAgain, () => {
-      this.python.removeFeedback();
-      this.python.showButton('run');
-      this.python.showButton('check-answer');
-      this.python.hideButton('show-solution');
-      this.python.hideButton('try-again');
-
-      this.python.trigger('resize');
-    }, false, {}, {});
-
-    this.python.addButton('reset', this.params.l10n.reset, () => {
-      this.python.resetTask();
-    }, true, {}, {
-      confirmationDialog: {
-        enable: true,
-        instance: this.python,
-        l10n: {}
-      }
-    });
-
-
-    // window.addEventListener('resize', () => {
-    //   this.python.trigger('rezise');
-    // });
     //TODO
 
     window.editor = this.editor;
@@ -764,8 +719,49 @@ export default class PythonContent {
     injectedCode += indentedCode;
     injectedCode += 'h5p_loader()\n';
     injectedCode += 'del h5p_loader\n';
-    
+
     return injectedCode;
+  }
+
+  addButtons() {
+    this.python.addButton('run', this.params.l10n.run, () => {
+      this.run();
+    });
+
+    this.python.addButton('stop', this.params.l10n.stop, () => {
+      this.stop();
+    }, false);
+
+    this.python.addButton('check-answer', this.params.l10n.checkAnswer, () => {
+      this.checkAnswer();
+    }, !this.params.requireRunBeforeCheck, {}, {});
+
+    this.python.addButton('show-solution', this.params.l10n.showSolution, () => {
+      this.showSolution();
+    }, false, {}, {});
+
+    this.python.addButton('hide-solution', this.params.l10n.hideSolution, () => {
+      this.hideSolution();
+    }, false, {}, {});
+
+    this.python.addButton('try-again', this.params.l10n.tryAgain, () => {
+      this.python.removeFeedback();
+      this.python.showButton('run');
+      this.python.showButton('check-answer');
+      this.python.hideButton('show-solution');
+      this.python.hideButton('try-again');
+      this.python.trigger('resize');
+    }, false, {}, {});
+
+    this.python.addButton('reset', this.params.l10n.reset, () => {
+      this.python.resetTask();
+    }, true, {}, {
+      confirmationDialog: {
+        enable: true,
+        instance: this.python,
+        l10n: {}
+      }
+    });
   }
 
   /**
