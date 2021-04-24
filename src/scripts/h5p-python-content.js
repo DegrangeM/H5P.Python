@@ -779,14 +779,6 @@ export default class PythonContent {
     return injectedCode;
   }
 
-  /*
-    Give abiltiy to check code for multiple cases ?
-    
-    → a function to display a feedback message
-  
-    → a function to set score to the user
-  */
-
   /**
    * Return the DOM for this class.
    *
