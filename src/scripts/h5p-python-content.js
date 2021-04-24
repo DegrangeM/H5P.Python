@@ -731,9 +731,9 @@ export default class PythonContent {
         }
         CodeMirror.H5P.appendLines(this.output, message, type);
       },
-      setData: (name, value) => {
+      setData: (name, data) => {
         name = Sk.ffi.remapToJs(name);
-        value = Sk.ffi.remapToJs(value);
+        data = Sk.ffi.remapToJs(data);
         if (typeof name !== 'string') return;
         if (typeof data !== 'number' && typeof data !== 'string') return;
         this.apiData[name] = data;
@@ -741,7 +741,7 @@ export default class PythonContent {
       getData: (name) => {
         return Sk.ffi.remapToPy(this.apiData[name]);
       },
-      trigger: (name, data) {
+      trigger: (name, data) => {
         name = Sk.ffi.remapToJs(name);
         data = Sk.ffi.remapToJs(data);
         if (typeof name !== 'string') return;
