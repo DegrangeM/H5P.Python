@@ -124,6 +124,36 @@
   color: #FF7777;
 }
 
+.CodeMirror-python-highlighted-success-line {
+  background-color: #007800;
+  color: #77FF77;
+}
+
+.CodeMirror-python-highlighted-info-line {
+  background-color: #000078;
+  color: #7777FF;
+}
+
+.CodeMirror-python-highlighted-alert-line {
+  background-color: #787800;
+  color: #FFFF77;
+}
+
+.CodeMirror-python-highlighted-note-line {
+  background-color: #787878;
+  color: #FFFFFF;
+}
+
+.CodeMirror-python-highlighted-cyan-line {
+  background-color: #007878;
+  color: #77FFFF;
+}
+
+.CodeMirror-python-highlighted-purple-line {
+  background-color: #780078;
+  color: #FF77FF;
+}
+
 .h5p-python .h5p-question-buttons.has-scorebar {
   width: calc(100% - 1.5em);
 }

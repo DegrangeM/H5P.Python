@@ -598,7 +598,18 @@ export default class PythonContent {
         if (typeof message !== 'string') return;
         if (typeof type !== 'undefined' && typeof type !== 'string') return;
         let types = {
-          'error': 'CodeMirror-python-highlighted-error-line'
+          'error': 'CodeMirror-python-highlighted-error-line',
+          'red': 'CodeMirror-python-highlighted-error-line',
+          'success': 'CodeMirror-python-highlighted-success-line',
+          'green': 'CodeMirror-python-highlighted-success-line',
+          'info': 'CodeMirror-python-highlighted-info-line',
+          'blue': 'CodeMirror-python-highlighted-info-line',
+          'alert': 'CodeMirror-python-highlighted-alert-line',
+          'yellow': 'CodeMirror-python-highlighted-alert-line',
+          'note': 'CodeMirror-python-highlighted-note-line',
+          'white': 'CodeMirror-python-highlighted-note-line',
+          'cyan': 'CodeMirror-python-highlighted-cyan-line',
+          'purple': 'CodeMirror-python-highlighted-purple-line'
         };
         // eslint-disable-next-line no-prototype-builtins
         if (!types.hasOwnProperty(type)) {
