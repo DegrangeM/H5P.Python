@@ -362,7 +362,6 @@ export default class PythonContent {
         iCheckInputs = 0;
         this.userOutput = '';
         this.solOutput = '';
-        console.log(this.getCodeToRun(this.editor.getValue(), true, { execution: iCheckExecution }));
         return Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true, { execution: iCheckExecution }), {
           output: x => {
             this.userOutput += x;
@@ -412,7 +411,9 @@ export default class PythonContent {
       result = result.then(promiseFactory);
     });
 
-    result.finally(() => {
+    result.catch(() => {
+
+    }).finally(() => {
       this.python.hideButton('stop');
     });
 
@@ -653,7 +654,10 @@ export default class PythonContent {
     }
 
     if (this.params.grading.gradingMethod === 'programmedGrading' && this.params.grading.executeBeforeGradingCode && grading === true) {
-      beforeCode = this.params.grading.executeBeforeGradingCode + '\n' + beforeCode;
+      let beforeGradingCode = this.getInjectApiCode() + '\n';
+      beforeGradingCode += CodeMirror.H5P.decode( this.params.grading.executeBeforeGradingCode) + '\n';
+      beforeGradingCode += 'h5p_api_unloader()\n';
+      beforeCode = beforeGradingCode + beforeCode;
     }
 
     return beforeCode;
@@ -667,6 +671,7 @@ export default class PythonContent {
       afterCode = '\n' + this.getInjectApiCode() + '\n';
       if (options.execution !== undefined) {
         afterCode += 'h5p_execution = ' + options.execution + '\n'
+        afterCode += 'h5p_lastExecution = ' + (options.execution === this.params.grading.inputs.length - 1 ? 'True' : 'False') + '\n'
       }
       afterCode += CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
     }
@@ -734,6 +739,9 @@ export default class PythonContent {
     };
     Sk.builtins['h5p_api_loader_' + this.randomApiKey] = () => {
       this.loadApi();
+    };
+    Sk.builtins['h5p_api_unloader'] = () => {
+      this.unloadApi();
     };
   }
 

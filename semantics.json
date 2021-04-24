@@ -97,7 +97,7 @@
         "optional": true,
         "language": "python",
         "label": "Code to execute before when grading",
-        "description": "This code will be executed before the student code when the Check button is pressed.",
+        "description": "This code will be executed before the student code when the Check button is pressed. Some functions and variables are avaiable (see Grading Code).",
         "widget": "showWhen",
         "showWhen": {
           "rules": [
@@ -115,7 +115,7 @@
         "optional": true,
         "language": "python",
         "label": "Grading Code",
-        "description": "Write there the code that will grade the student code. You can use multiple function :<br><code>h5p_setScore(x)</code> : Set user score to <code>x</code>.<br><code>h5p_getOutput()</code> : Return the outputed text.<br><code>h5p_output(text)</code> : Display <code>text</code> in the output.<br>The <code>h5p_execution</code> variable is also avaiable if you need to know the execution number.",
+        "description": "Write there the code that will grade the student code.<br>These function are available :<br><code>h5p_setScore(x)</code> : Set user score to <code>x</code>.<br><code>h5p_getOutput()</code> : Return the outputed text.<br><code>h5p_output(text)</code> : Display <code>text</code> in the output.<br><code>h5p_setData(name, data)</code> : Set some data to be reused between executions<br><code>h5p_getData(name)</code> : Get data previously saved<br>Some variable are also available :<br><code>h5p_execution</code> : current execution number (zero index)<br><code>h5p_lastExecution</code> : true if it's the last execution, false otherwise",
         "widget": "showWhen",
         "showWhen": {
           "rules": [
