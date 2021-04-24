@@ -531,7 +531,9 @@ export default class PythonContent {
           if (cm.getOption('fullScreen')) {
             cm.setOption('fullScreen', false);
           }
-        }
+        },
+        'Tab': false,
+        'Shift-Tab': false
       }
     });
 
