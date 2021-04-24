@@ -70,7 +70,13 @@ export default class PythonContent {
 
     this.python.addButton('reset', this.params.l10n.reset, () => {
       this.python.resetTask();
-    }, true);
+    }, true, {}, {
+      confirmationDialog: {
+        enable: true,
+        instance: this.python,
+        l10n: {}
+      }
+    });
 
 
     // window.addEventListener('resize', () => {
