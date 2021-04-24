@@ -670,8 +670,8 @@ export default class PythonContent {
     if (this.params.grading.gradingMethod === 'programmedGrading' && grading === true) {
       afterCode = '\n' + this.getInjectApiCode() + '\n';
       if (options.execution !== undefined) {
-        afterCode += 'h5p_execution = ' + options.execution + '\n'
-        afterCode += 'h5p_lastExecution = ' + (options.execution === this.params.grading.inputs.length - 1 ? 'True' : 'False') + '\n'
+        afterCode += 'h5p_execution = ' + options.execution + '\n';
+        afterCode += 'h5p_lastExecution = ' + (options.execution === this.params.grading.inputs.length - 1 ? 'True' : 'False') + '\n';
       }
       afterCode += CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
     }
@@ -725,7 +725,8 @@ export default class PythonContent {
         // eslint-disable-next-line no-prototype-builtins
         if (!types.hasOwnProperty(type)) {
           type = undefined;
-        } else {
+        }
+        else {
           type = types[type];
         }
         CodeMirror.H5P.appendLines(this.output, message, type);
