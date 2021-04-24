@@ -641,8 +641,9 @@ export default class PythonContent {
    * @param {boolean} [grading] Set to true to inject grading code
    */
 
-  getCodeToRun(code, grading) {
-    return this.getBeforeCode(grading) + code + this.getAfterCode(grading);
+  getCodeToRun(code, grading, options) {
+    options = options || {};
+    return this.getBeforeCode(grading) + code + this.getAfterCode(grading, options);
   }
 
   getBeforeCode(grading) {
@@ -651,8 +652,8 @@ export default class PythonContent {
       beforeCode = CodeMirror.H5P.decode(this.params.executeBeforeCode || '') + '\n';
     }
 
-    if (this.params.grading.gradingMethod === 'programmedGrading' && grading === true) {
-      beforeCode = this.params.grading.executeBeforeGradingCode + '\n' + beforeCode; // + this.executeAfterCode;
+    if (this.params.grading.gradingMethod === 'programmedGrading' && this.params.grading.executeBeforeGradingCode && grading === true) {
+      beforeCode = this.params.grading.executeBeforeGradingCode + '\n' + beforeCode;
     }
 
     return beforeCode;
@@ -660,11 +661,12 @@ export default class PythonContent {
 
   getAfterCode(grading, options) {
     let afterCode = '';
+    options = options || {};
 
     if (this.params.grading.gradingMethod === 'programmedGrading' && grading === true) {
       afterCode = '\n' + this.getInjectApiCode() + '\n';
       if (options.execution) {
-        afterCOde += 'h5p_execution = ' + '\n;'
+        afterCode += 'h5p_execution = ' + options.execution + '\n'
       }
       afterCode += CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
     }
