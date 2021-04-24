@@ -232,8 +232,6 @@ export default class PythonContent {
             shouldStop: () => this.shouldStop
           });
         }).finally(() => {
-          this.unloadApi();
-
           if (!runError && this.userOutput === this.solOutput) {
             return Promise.resolve();
           }
@@ -332,8 +330,6 @@ export default class PythonContent {
         }).catch((error) => {
           runError = error;
         }).finally(() => {
-          this.unloadApi();
-
           if (!runError) {
             return Promise.resolve();
           }
