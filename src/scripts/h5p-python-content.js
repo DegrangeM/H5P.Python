@@ -644,23 +644,27 @@ export default class PythonContent {
 
   getCodeToRun(code, grading, options) {
     options = options || {};
-    return this.getBeforeCode(grading) + code + this.getAfterCode(grading, options);
+    return this.getBeforeCode(grading, options) + code + '\n' + this.getAfterCode(grading, options);
   }
 
-  getBeforeCode(grading) {
+  getBeforeCode(grading, options) {
     let beforeCode = '';
-    if (this.params.executeBeforeCode) {
-      beforeCode = CodeMirror.H5P.decode(this.params.executeBeforeCode || '') + '\n';
+    options = options || {};
+
+    if (options.execution !== undefined) {
+      beforeCode += 'h5p_execution = ' + options.execution + '\n';
+      beforeCode += 'h5p_lastExecution = ' + (options.execution === this.params.grading.inputs.length - 1 ? 'True' : 'False') + '\n';
     }
 
     if (this.params.grading.gradingMethod === 'programmedGrading' && this.params.grading.executeBeforeGradingCode && grading === true) {
-      let beforeGradingCode = this.getInjectApiCode() + '\n';
-      beforeGradingCode += CodeMirror.H5P.decode(this.params.grading.executeBeforeGradingCode) + '\n';
-      beforeGradingCode += 'h5p_api_unloader()\n';
-      beforeCode = beforeGradingCode + beforeCode;
+      beforeCode += CodeMirror.H5P.decode(this.params.grading.executeBeforeGradingCode) + '\n';
     }
 
-    return beforeCode;
+    if (this.params.advancedOptions.executeBeforeCode) {
+      beforeCode += CodeMirror.H5P.decode(this.params.advancedOptions.executeBeforeCode || '') + '\n';
+    }
+
+    return this.injectApi(beforeCode);
   }
 
   getAfterCode(grading, options) {
@@ -668,7 +672,6 @@ export default class PythonContent {
     options = options || {};
 
     if (this.params.grading.gradingMethod === 'programmedGrading' && grading === true) {
-      afterCode = '\n' + this.getInjectApiCode() + '\n';
       if (options.execution !== undefined) {
         afterCode += 'h5p_execution = ' + options.execution + '\n';
         afterCode += 'h5p_lastExecution = ' + (options.execution === this.params.grading.inputs.length - 1 ? 'True' : 'False') + '\n';
@@ -676,11 +679,7 @@ export default class PythonContent {
       afterCode += CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
     }
 
-    return afterCode;
-  }
-
-  getInjectApiCode() {
-    return 'h5p_api_loader_' + this.randomApiKey + '()';
+    return this.injectApi(afterCode);
   }
 
   setupApi() {
@@ -752,14 +751,6 @@ export default class PythonContent {
     Object.entries(this.apis).forEach(([n, v]) => {
       Sk.builtins['h5p_' + n + '_' + this.randomApiKey] = v;
     });
-    /*
-    Sk.builtins['h5p_api_loader_' + this.randomApiKey] = () => {
-      this.loadApi();
-    };
-    Sk.builtins['h5p_api_unloader'] = () => {
-      this.unloadApi();
-    };
-    */
   }
 
   injectApi(code) {
@@ -770,9 +761,9 @@ export default class PythonContent {
       indentedCode += 'h5p_' + n + ' = h5p_' + n + '_' + this.randomApiKey + '\n';
     });
     indentedCode += code;
-    indentedCode = indentedCode.split('\n').map(x => '\t' + x).join('\n');
+    indentedCode = indentedCode.split('\n').map(x => '\t' + x).join('\n') + '\n';
 
-    injectedCode += indentedCode + '\n';
+    injectedCode += indentedCode;
     injectedCode += 'h5p_loader()\n';
     injectedCode += 'del h5p_loader\n';
     
