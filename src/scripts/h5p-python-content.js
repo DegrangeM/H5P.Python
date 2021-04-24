@@ -444,11 +444,27 @@ export default class PythonContent {
           if (cm.getOption('fullScreen')) {
             cm.setOption('fullScreen', false);
           }
+          else {
+            // The user pressed the escape key, tab will now tab to the next element
+            // instead of adding a tab in the code. This is important for accessibility
+            // The tab behaviour will revert to default the next time the editor is focused.
+            if (!cm.state.keyMaps.some(x => x.name === 'tabAccessibility')) {
+              cm.addKeyMap({
+                'name': 'tabAccessibility',
+                'Tab': false,
+                'Shift-Tab': false
+              });
+            }
+          }
         },
         'Ctrl-Enter': () => {
           this.run();
         }
       }
+    });
+
+    this.editor.on('focus', function (cm) { // On focus, make tab add tab in editor
+      cm.removeKeyMap('tabAccessibility');
     });
 
     if (this.params.editorOptions.highlightLines !== '') {
