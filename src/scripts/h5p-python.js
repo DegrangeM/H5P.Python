@@ -130,8 +130,9 @@ export default class Python extends H5P.Question {
      * @see contract at {@link https://h5p.org/documentation/developers/contracts#guides-header-5}
      */
     this.resetTask = () => {
-      // TODO: Reset what needs to be reset
       this.content.editor.setValue(CodeMirror.H5P.decode(this.params.startingCode || ''));
+      this.content.output.setValue('');
+      // TODO : setup highlight, readonly, etc.
     };
 
     /**
