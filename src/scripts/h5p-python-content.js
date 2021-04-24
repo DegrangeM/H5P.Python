@@ -376,22 +376,6 @@ export default class PythonContent {
           shouldStop: () => this.shouldStop
         }).catch((error) => {
           runError = error;
-        }).then(() => {
-          iCheckInputs = 0;
-          return Sk.H5P.run(this.getCodeToRun(CodeMirror.H5P.decode(this.params.solutionCode), true), {
-            output: x => {
-              this.solOutput += x;
-            },
-            input: (p, resolve) => {
-              let r = checkInputs[iCheckInputs] || '';
-              iCheckInputs++;
-              p.output(p.prompt);
-              p.output(r);
-              p.output('\n');
-              resolve(r);
-            },
-            shouldStop: () => this.shouldStop
-          });
         }).finally(() => {
           this.unloadApi();
 
