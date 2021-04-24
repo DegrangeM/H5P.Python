@@ -773,7 +773,7 @@ export default class PythonContent {
     let injectedCode = 'def h5p_loader() :\n';
 
     let indentedCode = '';
-    Object.entries(this.apis).forEach(([n]) => {
+    Object.keys(this.apis).forEach(n => {
       indentedCode += 'h5p_' + n + ' = h5p_' + n + '_' + this.randomApiKey + '\n';
     });
     indentedCode += code;
