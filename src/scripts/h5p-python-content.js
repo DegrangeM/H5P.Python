@@ -732,7 +732,9 @@ export default class PythonContent {
         CodeMirror.H5P.appendLines(this.output, message, type);
       },
       setData: (name, value) => {
-        let data = Sk.ffi.remapToJs(value);
+        name = Sk.ffi.remapToJs(name);
+        value = Sk.ffi.remapToJs(value);
+        if (typeof name !== 'string') return;
         if (typeof data !== 'number' && typeof data !== 'string') return;
         this.apiData[name] = data;
       },
