@@ -665,7 +665,7 @@ export default class PythonContent {
 
     if (this.params.grading.gradingMethod === 'programmedGrading' && grading === true) {
       afterCode = '\n' + this.getInjectApiCode() + '\n';
-      if (options.execution) {
+      if (options.execution !== undefined) {
         afterCode += 'h5p_execution = ' + options.execution + '\n'
       }
       afterCode += CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
