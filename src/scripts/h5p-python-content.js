@@ -362,7 +362,8 @@ export default class PythonContent {
         iCheckInputs = 0;
         this.userOutput = '';
         this.solOutput = '';
-        return Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true), {
+        console.log(this.getCodeToRun(this.editor.getValue(), true, { execution: iCheckExecution }));
+        return Sk.H5P.run(this.getCodeToRun(this.editor.getValue(), true, { execution: iCheckExecution }), {
           output: x => {
             this.userOutput += x;
           },
@@ -411,19 +412,7 @@ export default class PythonContent {
       result = result.then(promiseFactory);
     });
 
-    result.then(() => {
-      this.python.setFeedback(undefined, this.params.grading.maxScore, this.params.grading.maxScore);
-
-      this.python.answerGiven = true;
-      this.python.score = this.params.maxScore;
-      this.python.passed = true;
-    }).catch(() => {
-      this.python.setFeedback(undefined, 0, this.params.grading.maxScore);
-
-      this.python.answerGiven = true;
-      this.python.score = 0;
-      this.python.passed = false;
-    }).finally(() => {
+    result.finally(() => {
       this.python.hideButton('stop');
     });
 
@@ -658,22 +647,26 @@ export default class PythonContent {
 
   getBeforeCode(grading) {
     let beforeCode = '';
-    if (this.executeBeforeCode) {
+    if (this.params.executeBeforeCode) {
       beforeCode = CodeMirror.H5P.decode(this.params.executeBeforeCode || '') + '\n';
     }
 
-    if (this.params.grading.gradingMethod === 'gradingCode' && grading === true) {
+    if (this.params.grading.gradingMethod === 'programmedGrading' && grading === true) {
       beforeCode = this.params.grading.executeBeforeGradingCode + '\n' + beforeCode; // + this.executeAfterCode;
     }
 
     return beforeCode;
   }
 
-  getAfterCode(grading) {
+  getAfterCode(grading, options) {
     let afterCode = '';
 
-    if (this.params.grading.gradingMethod === 'gradingCode' && grading === true) {
-      afterCode = '\n' + this.getInjectApiCode() + '\n' + CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
+    if (this.params.grading.gradingMethod === 'programmedGrading' && grading === true) {
+      afterCode = '\n' + this.getInjectApiCode() + '\n';
+      if (options.execution) {
+        afterCOde += 'h5p_execution = ' + '\n;'
+      }
+      afterCode += CodeMirror.H5P.decode(this.params.grading.gradingCode || '');
     }
 
     return afterCode;
