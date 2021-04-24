@@ -624,6 +624,10 @@ export default class PythonContent {
     let afterCode = '';
     options = options || {};
 
+    if (this.params.advancedOptions.executeAfterCode) {
+      afterCode += CodeMirror.H5P.decode(this.params.advancedOptions.executeBeforeCode || '') + '\n';
+    }
+
     if (this.params.grading.gradingMethod === 'programmedGrading' && grading === true) {
       if (options.execution !== undefined) {
         afterCode += 'h5p_execution = ' + options.execution + '\n';
