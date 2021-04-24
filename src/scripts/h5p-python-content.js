@@ -29,8 +29,6 @@ export default class PythonContent {
 
     this.addButtons();
 
-    this.python.trigger('resize');
-
     //TODO
 
     window.editor = this.editor;
@@ -500,6 +498,10 @@ export default class PythonContent {
       cm.removeKeyMap('tabAccessibility');
     });
 
+    this.editor.on('refresh', () => {
+      this.python.trigger('resize');
+    });
+
     if (this.params.editorOptions.highlightLines !== '') {
       CodeMirror.H5P.highlightLines(this.editor, this.params.editorOptions.highlightLines);
     } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
@@ -582,6 +584,10 @@ export default class PythonContent {
 
     this.output.on('blur', () => {
       this.output.setOption('styleActiveLine', false);
+    });
+
+    this.output.on('refresh', () => {
+      this.python.trigger('resize');
     });
 
     this.output.on('changes', () => {

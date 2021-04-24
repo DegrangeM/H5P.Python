@@ -74,6 +74,8 @@ export default class Python extends H5P.Question {
       // Register Buttons
       this.addButtons();
 
+      this.trigger('resize');
+
       /*
        * H5P.Question also offers some more functions that could be used.
        * Consult https://github.com/h5p/h5p-question for details

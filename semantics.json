@@ -88,7 +88,8 @@
           "type": "text",
           "label": "Execution",
           "description": "You can set here the values that will be returned by each call to the <code>input</code> function during this execution. Put one value per line. Otherwise it will return an empty string.",
-          "widget": "textarea"
+          "widget": "textarea",
+          "optional": true
         }
       },
       {
