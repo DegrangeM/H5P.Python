@@ -680,6 +680,7 @@ export default class PythonContent {
 
   setupApi() {
     this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
+    this.apiData = {};
     this.apis = {
       setScore: (score, passed, message) => {
         score = Sk.ffi.remapToJs(score);
@@ -721,6 +722,14 @@ export default class PythonContent {
           type = undefined;
         }
         CodeMirror.H5P.appendLines(this.output, message);
+      },
+      setData: (name, value) => {
+        let data = Sk.ffi.remapToJs(this.userOutput);
+        if (typeof data !== 'number' && typeof data !== 'string') return;
+        this.apiData[name] = Sk.ffi.remapToJs(this.userOutput);
+      },
+      getData: (name) => {
+        return Sk.ffi.remapToPy(this.apiData[name]);
       }
     };
     Sk.builtins['h5p_api_loader_' + this.randomApiKey] = () => {
