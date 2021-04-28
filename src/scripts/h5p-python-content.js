@@ -416,7 +416,7 @@ export default class PythonContent {
         );
       }, {
         path: function (mode) {
-          return CodeMirror.H5P.getLibraryPath() + '/mode/' + mode + '/' + mode + '.js';
+          return CodeMirror.H5P.getPath('mode/' + mode + '/' + mode + '.js');
         }
       });
 
