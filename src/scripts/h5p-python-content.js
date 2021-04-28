@@ -453,6 +453,7 @@ export default class PythonContent {
 
     this.editor = CodeMirror(this.nodeEditor, {
       value: CodeMirror.H5P.decode(this.params.startingCode || ''),
+      inputStyle: 'textarea',
       keyMap: 'sublime',
       tabSize: this.params.editorOptions.tabSize,
       lineWrapping: true,
@@ -556,6 +557,7 @@ export default class PythonContent {
 
     this.output = CodeMirror(this.nodeOutput, {
       value: '',
+      inputStyle: 'textarea',
       theme: 'nord',
       readOnly: true,
       tabSize: 2,
