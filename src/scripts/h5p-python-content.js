@@ -714,7 +714,21 @@ export default class PythonContent {
         data = Sk.ffi.remapToJs(data);
         if (typeof name !== 'string') return;
         name = name !== undefined ? 'H5P.Python.' + name : 'H5P.Python';
-        H5P.externalDispatcher.trigger(name, data);
+        if (this.triggerMode === 1 || this.triggerMode === 2) {
+          data = data || {};
+          data.context = 'h5p';
+          data.action = name;
+          if (this.triggerMode === 1) window.parent.postMessage(data, '*');
+          if (this.triggerMode === 2) window.parent.parent.postMessage(data, '*');  // mode for moodle with core integration
+        }
+        else { // default mode
+          H5P.externalDispatcher.trigger(name, data);
+        }
+      },
+      triggerMode: (mode) => {
+        mode = Sk.ffi.remapToJs(mode);
+        if (typeof mode !== 'number') return;
+        this.triggerMode = mode;
       }
     };
     Object.entries(this.apis).forEach(([n, v]) => {
