@@ -802,7 +802,7 @@ export default class PythonContent {
           action: name,
           value: data
         };
-        if (this.triggerMode === 1) window.parent.postMessage(messageData, '*');
+        if (typeof this.triggerMode === 'undefined' || this.triggerMode === 1) window.parent.postMessage(messageData, '*');
         if (this.triggerMode === 2) window.parent.parent.postMessage(messageData, '*');
       },
       /**
@@ -819,11 +819,11 @@ export default class PythonContent {
       /**
        * Dispatch an event to parent (or parent of parent) window and await an answer.
        * Event can be listened and replied with :
-       *    window.removeEventListener('message', function() {
+       *    window.addEventListener('message', function() {
        *      if (event.data && event.data.context === 'h5p' && event.data.action === 'H5P.Python.nameExample') {
        *        event.source.postMessage({
        *          context: 'h5p',
-       *          action: 'H5P.Python.trigger',
+       *          action: 'H5P.Python.query',
        *          value: 'returnValueExample'
        *        }, event.origin);
        *      }
