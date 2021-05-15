@@ -789,6 +789,7 @@ export default class PythonContent {
         name = Sk.ffi.remapToJs(name);
         data = Sk.ffi.remapToJs(data);
         if (typeof name !== 'string') return;
+        if (typeof data !== 'undefined' && typeof data !== 'object') return;
         name = name !== undefined ? 'H5P.Python.' + name : 'H5P.Python';
         if (this.triggerMode === 1 || this.triggerMode === 2) {
           data = data || {};
