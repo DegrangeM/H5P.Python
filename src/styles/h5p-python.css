@@ -119,6 +119,10 @@
   border-left: none;
 }
 
+.CodeMirror-python-readonly {
+  opacity: 0.5;
+}
+
 .CodeMirror-python-highlighted-error-line {
   background-color: #780000;
   color: #FF7777;

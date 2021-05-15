@@ -210,6 +210,13 @@
         "description": "Use this option to prevent editions of some lines of the code. Use the same syntax as highlight lines but with additionnal posibility (see docs).",
         "default": "",
         "optional": true
+      },
+      {
+        "name": "readOnlyStyle",
+        "type": "boolean",
+        "label": "Increase brightness of readonly text",
+        "description": "If enabled, readonly text will be be displayed in lighter color.",
+        "default": true
       }
     ]
   },

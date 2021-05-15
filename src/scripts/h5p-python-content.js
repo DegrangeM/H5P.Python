@@ -547,7 +547,7 @@ export default class PythonContent {
     } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
 
     if (this.params.editorOptions.readOnlyLines !== '') {
-      CodeMirror.H5P.readOnlyLines(this.editor, this.params.editorOptions.readOnlyLines);
+      CodeMirror.H5P.readOnlyLines(this.editor, this.params.editorOptions.readOnlyLines, this.params.editorOptions.readOnlyStyle ? 'CodeMirror-python-readonly' : undefined);
     } // TODO : BE CARREFULL WITH THIS AND CONTENT STATE AS THE LINES WILL NOT BE THE SAME !
 
     if (this.params.requireRunBeforeCheck) {
