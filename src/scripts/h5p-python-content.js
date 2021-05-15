@@ -788,25 +788,37 @@ export default class PythonContent {
       trigger: (name, data) => {
         name = Sk.ffi.remapToJs(name);
         data = Sk.ffi.remapToJs(data);
-        if (typeof name !== 'string') return;
-        if (typeof data !== 'undefined' && typeof data !== 'object') return;
+        if (typeof name !== 'undefined' && typeof name !== 'string') return;
         name = name !== undefined ? 'H5P.Python.' + name : 'H5P.Python';
         if (this.triggerMode === 1 || this.triggerMode === 2) {
-          data = data || {};
-          data.context = 'h5p';
-          data.action = name;
-          if (this.triggerMode === 1) window.parent.postMessage(data, '*');
-          if (this.triggerMode === 2) window.parent.parent.postMessage(data, '*');
+          let messageData = {
+            context: 'h5p',
+            action: name,
+            value: data
+          };
+          if (this.triggerMode === 1) window.parent.postMessage(messageData, '*');
+          if (this.triggerMode === 2) window.parent.parent.postMessage(messageData, '*');
         }
         else { // default mode
-          H5P.externalDispatcher.trigger(name, data);
+          H5P.externalDispatcher.trigger(name, {
+            value: data
+          });
         }
       },
       /**
        * Select how event should be dispatched
        * @param {number} mode 
-       *    1 : send message to parent (default mode)
+       *    0 : send message with h5p externalDispatcher (default mode)
+       *        H5P.externalDispatcher.on('H5P.Python.nameExample', function(event) {
+       *          console.log(event.data.value);
+       *        });
+       *    1 : send message to parent
        *    2 : send message to parent of parent (mode for moodle with h5p core integration)
+       *        window.removeEventListener('message', function() {
+       *          if (event.data && event.data.context === 'h5p' && event.data.action === 'H5P.Python.nameExample') {
+       *            console.log(event.data.value);
+       *          }
+       *        });
        */
       triggerMode: (mode) => {
         mode = Sk.ffi.remapToJs(mode);
@@ -820,16 +832,9 @@ export default class PythonContent {
        * @returns 
        */
       query: (name, data) => {
-        name = Sk.ffi.remapToJs(name);
-        data = Sk.ffi.remapToJs(data);
-        if (typeof name !== 'string') return;
-        if (typeof data !== 'undefined' && typeof data !== 'object') return;
-        name = name !== undefined ? 'H5P.Python.' + name : 'H5P.Python';
-        if (this.triggerMode === 1 || this.triggerMode === 2) {
-          data = data || {};
-          data.context = 'h5p';
-          data.action = name;
-        }
+        // name = Sk.ffi.remapToJs(name);
+        // data = Sk.ffi.remapToJs(data);
+        if (typeof Sk.ffi.remapToJs(name) !== 'undefined' && typeof Sk.ffi.remapToJs(name) !== 'string') return;
         return new Sk.misceval.promiseToSuspension(new Promise((resolve) => {
           let queryListener = function (event) {
             if (event.data && event.data.context === 'h5p' && event.data.action === 'H5P.Python.query') {
@@ -838,9 +843,7 @@ export default class PythonContent {
             }
           };
           window.addEventListener('message', queryListener);
-          if (this.triggerMode === 1) window.parent.postMessage(data, '*');
-          else if (this.triggerMode === 2) window.parent.parent.postMessage(data, '*');
-          else H5P.externalDispatcher.trigger(name, data);
+          this.apis.trigger(name, data);
         }).then((r) => Sk.ffi.remapToPy(r)));
       }
     };
