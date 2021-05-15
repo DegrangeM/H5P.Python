@@ -140,6 +140,7 @@ export default class Python extends H5P.Question {
       this.hideButton('show-solution');
       this.hideButton('try-again');
       this.content.editor.setValue(CodeMirror.H5P.decode(this.params.startingCode || ''));
+      this.content.editor.setOption('readOnly', false);
       this.content.output.setValue('');
       setTimeout(() => { // reset output after async
         this.content.output.setValue('');

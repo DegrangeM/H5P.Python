@@ -46,6 +46,7 @@ export default class PythonContent {
     this.python.hideButton('run');
     this.python.showButton('stop');
 
+    this.editor.setOption('readOnly', true);
     this.output.setValue('');
 
     // todo : remove the true
@@ -138,12 +139,16 @@ export default class PythonContent {
       onFinally: () => {
         this.python.showButton('run');
         this.python.hideButton('stop');
+        this.editor.setOption('readOnly', false);
       },
       shouldStop: () => this.shouldStop
     });
   }
 
   stop() {
+
+    this.editor.setOption('readOnly', false);
+
     this.shouldStop = true;
     if (this.rejectInput !== undefined) {
       this.rejectInput('Interrupted execution');
@@ -156,6 +161,8 @@ export default class PythonContent {
     this.shouldStop = false;
     this.python.hideButton('run');
     this.python.showButton('stop');
+
+    this.editor.setOption('readOnly', true);
 
     this.python.hideButton('check-answer');
 
@@ -369,14 +376,14 @@ export default class PythonContent {
   showSolution() {
     this.codeBeforeSolution = this.editor.getValue();
     this.editor.setValue(CodeMirror.H5P.decode(this.params.solutionCode));
-    this.editor.setOption('readOnly', true);
+    // this.editor.setOption('readOnly', true);
     this.python.hideButton('show-solution');
     this.python.showButton('hide-solution');
   }
 
   hideSolution() {
     this.editor.setValue(this.codeBeforeSolution);
-    this.editor.setOption('readOnly', false);
+    // this.editor.setOption('readOnly', false);
     this.python.hideButton('hide-solution');
     this.python.showButton('show-solution');
   }
@@ -776,6 +783,7 @@ export default class PythonContent {
 
     this.python.addButton('try-again', this.params.l10n.tryAgain, () => {
       this.python.removeFeedback();
+      this.editor.setOption('readOnly', false);
       this.python.showButton('run');
       this.python.showButton('check-answer');
       this.python.hideButton('show-solution');
