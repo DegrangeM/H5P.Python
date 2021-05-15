@@ -791,27 +791,19 @@ export default class PythonContent {
        * @param {Object} [data] 
        * @returns 
        * 
-
        */
       trigger: (name, data) => {
         name = Sk.ffi.remapToJs(name);
         data = Sk.ffi.remapToJs(data);
         if (typeof name !== 'undefined' && typeof name !== 'string') return;
         name = name !== undefined ? 'H5P.Python.' + name : 'H5P.Python';
-        if (this.triggerMode === 1 || this.triggerMode === 2) {
-          let messageData = {
-            context: 'h5p',
-            action: name,
-            value: data
-          };
-          if (this.triggerMode === 1) window.parent.postMessage(messageData, '*');
-          if (this.triggerMode === 2) window.parent.parent.postMessage(messageData, '*');
-        }
-        else { // default mode
-          H5P.externalDispatcher.trigger(name, {
-            value: data
-          });
-        }
+        let messageData = {
+          context: 'h5p',
+          action: name,
+          value: data
+        };
+        if (this.triggerMode === 1) window.parent.postMessage(messageData, '*');
+        if (this.triggerMode === 2) window.parent.parent.postMessage(messageData, '*');
       },
       /**
        * Select how event should be dispatched
