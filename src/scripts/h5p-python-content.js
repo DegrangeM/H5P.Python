@@ -780,10 +780,18 @@ export default class PythonContent {
         return Sk.ffi.remapToPy(this.apiData[name]);
       },
       /**
-       * Dispatch an event to parent window.
+       * Dispatch an event to parent (or parent of parent) window.
+       * Event can be listened with :
+       *    window.removeEventListener('message', function() {
+       *      if (event.data && event.data.context === 'h5p' && event.data.action === 'H5P.Python.nameExample') {
+       *        console.log(event.data.value);
+       *      }
+       *    });
        * @param {string} [name] 
        * @param {Object} [data] 
        * @returns 
+       * 
+
        */
       trigger: (name, data) => {
         name = Sk.ffi.remapToJs(name);
@@ -808,17 +816,8 @@ export default class PythonContent {
       /**
        * Select how event should be dispatched
        * @param {number} mode 
-       *    0 : send message with h5p externalDispatcher (default mode)
-       *        H5P.externalDispatcher.on('H5P.Python.nameExample', function(event) {
-       *          console.log(event.data.value);
-       *        });
        *    1 : send message to parent
        *    2 : send message to parent of parent (mode for moodle with h5p core integration)
-       *        window.removeEventListener('message', function() {
-       *          if (event.data && event.data.context === 'h5p' && event.data.action === 'H5P.Python.nameExample') {
-       *            console.log(event.data.value);
-       *          }
-       *        });
        */
       triggerMode: (mode) => {
         mode = Sk.ffi.remapToJs(mode);
@@ -826,14 +825,22 @@ export default class PythonContent {
         this.triggerMode = mode;
       },
       /**
-       * Dispatch an event to parent window and await an answer.
+       * Dispatch an event to parent (or parent of parent) window and await an answer.
+       * Event can be listened and replied with :
+       *    window.removeEventListener('message', function() {
+       *      if (event.data && event.data.context === 'h5p' && event.data.action === 'H5P.Python.nameExample') {
+       *        event.source.postMessage({
+       *          context: 'h5p',
+       *          action: 'H5P.Python.trigger',
+       *          value: 'returnValueExample'
+       *        }, event.origin);
+       *      }
+       *    });
        * @param {string} [name] 
        * @param {Object} [data] 
        * @returns 
        */
       query: (name, data) => {
-        // name = Sk.ffi.remapToJs(name);
-        // data = Sk.ffi.remapToJs(data);
         if (typeof Sk.ffi.remapToJs(name) !== 'undefined' && typeof Sk.ffi.remapToJs(name) !== 'string') return;
         return new Sk.misceval.promiseToSuspension(new Promise((resolve) => {
           let queryListener = function (event) {
