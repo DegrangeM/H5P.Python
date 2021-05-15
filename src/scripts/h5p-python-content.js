@@ -37,7 +37,7 @@ export default class PythonContent {
   }
 
   /**
-   * Function to run the python code
+   * Run the python code in the editor
    */
   run() {
 
@@ -145,6 +145,11 @@ export default class PythonContent {
     });
   }
 
+  /**
+   * Stop the execution of the current code in the editor.
+   * Called by pressing the stop button that appear when the
+   * "Run" / "Check" button is pressed and the execution haven't finished.
+   */
   stop() {
 
     this.editor.setOption('readOnly', false);
@@ -155,6 +160,11 @@ export default class PythonContent {
     }
   }
 
+  /**
+   * Check the answer submitted by the student.
+   * Will call other function to check the answer
+   * depending of the grading method selected.
+   */
   checkAnswer() {
 
     this.stop();
@@ -185,6 +195,11 @@ export default class PythonContent {
     }
   }
 
+  /**
+   * Check the student solution when the grading method is set to "Compare outputs".
+   * This will run the student code and the solution code and check both output.
+   * The student code will success if both output are the same.
+   */
   checkAnswer_compareOutputs() {
     let iCheckExecution = -1;
     let iCheckInputs;
@@ -297,6 +312,9 @@ export default class PythonContent {
 
   }
 
+  /**
+   * Check the student solution when the grading method is set to "Programmed grading".
+   */
   checkAnswer_programmedGrading() {
     let iCheckExecution = -1;
     let iCheckInputs;
@@ -373,6 +391,11 @@ export default class PythonContent {
 
   }
 
+  /**
+   * Show the solution.
+   * Called when pressing the "Show solution" button
+   * which is displayed after pressing the "Check" button.
+   */
   showSolution() {
     this.codeBeforeSolution = this.editor.getValue();
     this.editor.setValue(CodeMirror.H5P.decode(this.params.solutionCode));
@@ -381,6 +404,11 @@ export default class PythonContent {
     this.python.showButton('hide-solution');
   }
 
+  /**
+   * Hide the solution.
+   * Called when presisng the Hide solution button which
+   * is displayed after pressing the "Show solution" button.
+   */
   hideSolution() {
     this.editor.setValue(this.codeBeforeSolution);
     // this.editor.setOption('readOnly', false);
@@ -388,6 +416,10 @@ export default class PythonContent {
     this.python.showButton('show-solution');
   }
 
+  /**
+   * Create and append the instruction block (and it's show/hide vertical bar) if some instruction are set.
+   * This block will contain instruction on what the student have to do.
+   */
   createInstructions() {
     if (this.params.instructions !== '') {
 
@@ -552,7 +584,6 @@ export default class PythonContent {
 
   /**
    * Append the codemirror that will act as ouput
-   * @param {HTMLElement} el  Html node to which the editor will be append.
    */
   createOutput() {
 
@@ -612,6 +643,8 @@ export default class PythonContent {
    * This function return the code with the added code.
    * @param {string} code 
    * @param {boolean} [grading] Set to true to inject grading code
+   * @param {Object} [options]
+   * @param {Object} [options.execution] The execution number, used when there is multiple executions set.
    */
 
   getCodeToRun(code, grading, options) {
@@ -658,10 +691,21 @@ export default class PythonContent {
     return this.injectApi(afterCode);
   }
 
+  /**
+   * Setup the Api.
+   * This will set the various api functions under a random name to reduce cheating.
+   */
   setupApi() {
     this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
     this.apiData = {};
     this.apis = {
+      /**
+       * Set the score to the activity and optionnaly display a message.
+       * @param {number} score
+       * @param {boolean} [passed]
+       * @param {string} [message]
+       * @returns 
+       */
       setScore: (score, passed, message) => {
         score = Sk.ffi.remapToJs(score);
         passed = Sk.ffi.remapToJs(passed);
@@ -675,9 +719,18 @@ export default class PythonContent {
         }
         this.python.setFeedback(message, score, this.params.maxScore);
       },
+      /**
+       * Return the outputed values by the program.
+       * @returns {String}
+       */
       getOutput: () => {
         return Sk.ffi.remapToPy(this.userOutput);
       },
+      /**
+       * Display a message in the output.
+       * @param {string} message The message to display
+       * @param {string} [type] Optionnal style to add to the text
+       */
       output: (message, type) => {
         message = Sk.ffi.remapToJs(message);
         type = Sk.ffi.remapToJs(type);
@@ -706,6 +759,11 @@ export default class PythonContent {
         }
         CodeMirror.H5P.appendLines(this.output, message, type);
       },
+      /**
+       * Set some data that can be retrieve between multiples executions of the same check.
+       * @param {string} name 
+       * @param {number|string} data 
+       */
       setData: (name, data) => {
         name = Sk.ffi.remapToJs(name);
         data = Sk.ffi.remapToJs(data);
@@ -713,9 +771,20 @@ export default class PythonContent {
         if (typeof data !== 'number' && typeof data !== 'string') return;
         this.apiData[name] = data;
       },
+      /**
+       * Return a previously stored value during an execution of the same check.
+       * @param {string} name 
+       * @returns {string} 
+       */
       getData: (name) => {
         return Sk.ffi.remapToPy(this.apiData[name]);
       },
+      /**
+       * Dispatch an event to parent window.
+       * @param {string} [name] 
+       * @param {Object} [data] 
+       * @returns 
+       */
       trigger: (name, data) => {
         name = Sk.ffi.remapToJs(name);
         data = Sk.ffi.remapToJs(data);
@@ -726,12 +795,18 @@ export default class PythonContent {
           data.context = 'h5p';
           data.action = name;
           if (this.triggerMode === 1) window.parent.postMessage(data, '*');
-          if (this.triggerMode === 2) window.parent.parent.postMessage(data, '*');  // mode for moodle with core integration
+          if (this.triggerMode === 2) window.parent.parent.postMessage(data, '*');
         }
         else { // default mode
           H5P.externalDispatcher.trigger(name, data);
         }
       },
+      /**
+       * Select how event should be dispatched
+       * @param {number} mode 
+       *    1 : send message to parent (default mode)
+       *    2 : send message to parent of parent (mode for moodle with h5p core integration)
+       */
       triggerMode: (mode) => {
         mode = Sk.ffi.remapToJs(mode);
         if (typeof mode !== 'number') return;
@@ -743,6 +818,12 @@ export default class PythonContent {
     });
   }
 
+  /**
+   * Add python code to the passed code in parameter to give it access to the api methods.
+   * The code is also executed in it's own context to prevent unwanted scope issues.
+   * @param {string} code 
+   * @returns {string}
+   */
   injectApi(code) {
     let injectedCode = 'def h5p_loader() :\n';
 
@@ -760,6 +841,9 @@ export default class PythonContent {
     return injectedCode;
   }
 
+  /**
+   * Adds run, stop, check-answer, show-solution, hide-solution, try again and reset buttons
+   */
   addButtons() {
     this.python.addButton('run', this.params.l10n.run, () => {
       this.run();
