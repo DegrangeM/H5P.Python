@@ -55,7 +55,7 @@ export default class PythonContent {
         CodeMirror.H5P.appendText(this.output, x);
       },
       input: (p, resolve, reject) => {
-        this.rejectInput = reject;
+        this.currentRejectPromise = reject;
         p.output(p.prompt);
         let lastLine = this.output.lastLine();
         let lastCh = this.output.getLine(lastLine).length;
@@ -155,8 +155,8 @@ export default class PythonContent {
     this.editor.setOption('readOnly', false);
 
     this.shouldStop = true;
-    if (this.rejectInput !== undefined) {
-      this.rejectInput('Interrupted execution');
+    if (this.currentRejectPromise !== undefined) {
+      this.currentRejectPromise('Interrupted execution');
     }
   }
 
@@ -834,7 +834,8 @@ export default class PythonContent {
        */
       query: (name, data) => {
         if (typeof Sk.ffi.remapToJs(name) !== 'undefined' && typeof Sk.ffi.remapToJs(name) !== 'string') return;
-        return new Sk.misceval.promiseToSuspension(new Promise((resolve) => {
+        return new Sk.misceval.promiseToSuspension(new Promise((resolve, reject) => {
+          this.currentRejectPromise = reject;
           let queryListener = function (event) {
             if (event.data && event.data.context === 'h5p' && event.data.action === 'H5P.Python.query') {
               window.removeEventListener('message', queryListener);
