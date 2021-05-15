@@ -812,6 +812,36 @@ export default class PythonContent {
         mode = Sk.ffi.remapToJs(mode);
         if (typeof mode !== 'number') return;
         this.triggerMode = mode;
+      },
+      /**
+       * Dispatch an event to parent window and await an answer.
+       * @param {string} [name] 
+       * @param {Object} [data] 
+       * @returns 
+       */
+      query: (name, data) => {
+        name = Sk.ffi.remapToJs(name);
+        data = Sk.ffi.remapToJs(data);
+        if (typeof name !== 'string') return;
+        if (typeof data !== 'undefined' && typeof data !== 'object') return;
+        name = name !== undefined ? 'H5P.Python.' + name : 'H5P.Python';
+        if (this.triggerMode === 1 || this.triggerMode === 2) {
+          data = data || {};
+          data.context = 'h5p';
+          data.action = name;
+        }
+        return new Sk.misceval.promiseToSuspension(new Promise((resolve) => {
+          let queryListener = function (event) {
+            if (event.data && event.data.context === 'h5p' && event.data.action === 'H5P.Python.query') {
+              window.removeEventListener('message', queryListener);
+              resolve(event.data.value);
+            }
+          };
+          window.addEventListener('message', queryListener);
+          if (this.triggerMode === 1) window.parent.postMessage(data, '*');
+          else if (this.triggerMode === 2) window.parent.parent.postMessage(data, '*');
+          else H5P.externalDispatcher.trigger(name, data);
+        }).then((r) => Sk.ffi.remapToPy(r)));
       }
     };
     Object.entries(this.apis).forEach(([n, v]) => {
