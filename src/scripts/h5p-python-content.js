@@ -42,6 +42,7 @@ export default class PythonContent {
   run() {
 
     this.shouldStop = false;
+    this.setupApi = {};
 
     this.python.hideButton('run');
     this.python.showButton('stop');
@@ -172,6 +173,8 @@ export default class PythonContent {
 
     this.stop();
     this.shouldStop = false;
+    this.setupApi = {};
+
     this.python.hideButton('run');
     this.python.showButton('stop');
 
@@ -700,7 +703,6 @@ export default class PythonContent {
    */
   setupApi() {
     this.randomApiKey = (parseInt(Math.random() * 58786559 + 1679616)).toString(36); // generate a string between 10000 and ZZZZZ
-    this.apiData = {};
     this.apis = {
       /**
        * Set the score to the activity and optionnaly display a message.
