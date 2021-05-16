@@ -158,6 +158,9 @@ export default class PythonContent {
     if (this.currentRejectPromise !== undefined) {
       this.currentRejectPromise('Interrupted execution');
     }
+    if (Sk.rejectSleep !== undefined) {
+      Sk.rejectSleep('Interrupted execution');
+    }
   }
 
   /**
